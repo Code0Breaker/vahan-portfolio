@@ -6,7 +6,8 @@ import { ExternalLink, RefreshCw, Users } from "lucide-react";
 
 interface TeamMember {
   role: string;
-  name?: string; // Optional - can show just role if preferred
+  name?: string;
+  linkedin?: string;
 }
 
 interface ShowcaseProject {
@@ -23,38 +24,37 @@ const showcaseProjects: ShowcaseProject[] = [
   {
     id: "1",
     title: "Aikikai Armenia",
-    description: "Official website for the Aikido Federation of Armenia. Features modern design and smooth animations.",
+    description: "Official website for the Aikido Federation of Armenia. Built by order with modern design and smooth animations.",
     url: "https://aikikai.am",
     technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
     myRole: "Full Stack Developer",
     team: [
-      { role: "Project Manager", name: "Diana Yeghikyan" },
-      { role: "UI/UX Designer", name: "Armine Petrosyan" },
-      { role: "Full Stack Developer", name: "Vahan Muradyan" },
+      { role: "Project Manager", name: "Armine Petrosyan", linkedin: "https://www.linkedin.com/in/armine-petrosyan-160146216/" },
+      { role: "UI/UX Designer", name: "Diana Yeghikyan", linkedin: "https://www.linkedin.com/in/diana-yeghikyan-968103182/" },
+      { role: "Full Stack Developer", name: "Vahan Muradyan", linkedin: "https://www.linkedin.com/in/vahan-muradyan/" },
     ],
   },
   {
     id: "2",
     title: "Terlemezyan Art School",
-    description: "Website for the prestigious Terlemezyan Art School, showcasing student works and school information.",
+    description: "Website for the prestigious Terlemezyan Art School. Built by order, showcasing student works and school information.",
     url: "https://terlemezyan.com",
     technologies: ["Next.js", "React", "TypeScript", "SCSS"],
     myRole: "Full Stack Developer",
     team: [
-      { role: "Project Lead", name: "Client" },
-      { role: "Full Stack Developer", name: "Vahan Muradyan" },
+      { role: "Full Stack Developer", name: "Vahan Muradyan", linkedin: "https://www.linkedin.com/in/vahan-muradyan/" },
     ],
   },
   {
     id: "3",
     title: "DCP Armenia",
-    description: "Political party website with modern, responsive design and content management system.",
+    description: "Political party website built by order with modern, responsive design and content management system.",
     url: "https://dcp.am",
     technologies: ["Next.js", "React", "TypeScript", "PayloadCMS"],
     myRole: "Full Stack Developer",
     team: [
-      { role: "HTML/CSS Developer", name: "Harut Shahnubaryan" },
-      { role: "Full Stack Developer", name: "Vahan Muradyan" },
+      { role: "HTML/CSS Developer", name: "Harut Shahnubaryan", linkedin: "https://www.linkedin.com/in/harut-shahnubaryan-467669179/" },
+      { role: "Full Stack Developer", name: "Vahan Muradyan", linkedin: "https://www.linkedin.com/in/vahan-muradyan/" },
     ],
   },
 ];
@@ -257,30 +257,48 @@ function ProjectCard({ project, index }: { project: ShowcaseProject; index: numb
                 <span className="font-mono uppercase tracking-wider">Team</span>
               </div>
               <div className="flex flex-wrap gap-2">
-                {project.team.map((member, i) => (
-                  <div
-                    key={i}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs ${
-                      member.name === "Vahan Muradyan"
-                        ? "bg-primary/10 border border-primary/30 text-primary"
-                        : "bg-muted border border-border text-muted-foreground"
-                    }`}
-                  >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                      member.name === "Vahan Muradyan"
-                        ? "bg-primary text-background"
-                        : "bg-border text-muted-foreground"
-                    }`}>
-                      {member.name ? member.name.charAt(0) : member.role.charAt(0)}
+                {project.team.map((member, i) => {
+                  const isMe = member.name === "Vahan Muradyan";
+                  const content = (
+                    <>
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                        isMe
+                          ? "bg-primary text-background"
+                          : "bg-border text-muted-foreground"
+                      }`}>
+                        {member.name ? member.name.charAt(0) : member.role.charAt(0)}
+                      </div>
+                      <div>
+                        <span className="font-medium">{member.role}</span>
+                        {member.name && member.name !== "Client" && (
+                          <span className="opacity-70"> · {member.name}</span>
+                        )}
+                      </div>
+                    </>
+                  );
+
+                  const baseClassName = `flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-all ${
+                    isMe
+                      ? "bg-primary/10 border border-primary/30 text-primary"
+                      : "bg-muted border border-border text-muted-foreground"
+                  }`;
+
+                  return member.linkedin ? (
+                    <a
+                      key={i}
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${baseClassName} hover:border-primary/50 hover:text-primary cursor-pointer`}
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <div key={i} className={baseClassName}>
+                      {content}
                     </div>
-                    <div>
-                      <span className="font-medium">{member.role}</span>
-                      {member.name && member.name !== "Client" && (
-                        <span className="opacity-70"> · {member.name}</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -309,13 +327,13 @@ export default function ProjectShowcase() {
           className="mb-16 text-center"
         >
           <span className="text-primary text-sm font-medium tracking-widest uppercase mb-4 block font-mono">
-            &gt; Live Projects
+            &gt; Client Projects
           </span>
           <h2 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-display)] mb-6">
-            See them in <span className="text-gradient">action</span>
+            Built by <span className="text-gradient">order</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Interactive previews of live projects I&apos;ve built with Next.js and React.
+            Freelance projects built for clients. Live previews powered by Next.js and React.
           </p>
         </motion.div>
 

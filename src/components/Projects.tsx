@@ -2,72 +2,69 @@
 
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useMemo } from "react";
-import { ExternalLink, Github, Filter, X } from "lucide-react";
-import Image from "next/image";
+import { Filter, X, Building2, Briefcase } from "lucide-react";
 
 export interface Project {
   id: string;
   title: string;
   description: string;
-  longDescription?: string;
-  image: string;
+  company: string;
   technologies: string[];
-  liveUrl?: string;
-  githubUrl?: string;
   featured?: boolean;
+  current?: boolean;
 }
 
-// Sample projects - you can replace these with your actual projects
 const projects: Project[] = [
+  {
+    id: "0",
+    title: "MediaAI & AI Magazine",
+    description: "AI-powered media platform and digital magazine focused on artificial intelligence news, insights, and industry trends. Building modern web interfaces for content delivery and user engagement.",
+    company: "G42",
+    technologies: ["Next.js", "React", "TypeScript", "AI/ML Integration"],
+    featured: true,
+    current: true,
+  },
   {
     id: "1",
     title: "Build Download System",
-    description: "A high-performance build download application using WebTorrent technology",
-    longDescription: "Developed a complete build download product for Saber Interactive, resolving performance issues using WebTorrent and Electron.js. Optimized by separating UI and torrent functionalities, transitioning to Vue3, TypeScript, and Vite.",
-    image: "/projects/build-download.jpg",
+    description: "High-performance build download application using WebTorrent technology. Optimized by separating UI and torrent functionalities, transitioning to Vue3, TypeScript, and Vite.",
+    company: "Saber Interactive",
     technologies: ["Electron.js", "Vue.js", "TypeScript", "WebTorrent", "SQLite"],
     featured: true,
   },
   {
     id: "2",
     title: "Procurement Analytics System",
-    description: "Internal procurement management and analytics platform",
-    longDescription: "A comprehensive procurement management system with real-time analytics, built with Vue.js and GraphQL for efficient data handling and visualization.",
-    image: "/projects/procurement.jpg",
+    description: "Comprehensive procurement management system with real-time analytics, built with Vue.js and GraphQL for efficient data handling and visualization.",
+    company: "Saber Interactive",
     technologies: ["Vue.js", "TypeScript", "GraphQL", "PrimeVue"],
-    featured: true,
   },
   {
     id: "3",
     title: "Payroll Management System",
-    description: "Secure employee payroll system with RSA encryption",
-    longDescription: "A secure payroll management system implementing asymmetric encryption (RSA) for handling sensitive salary data with public/private key pairs.",
-    image: "/projects/payroll.jpg",
+    description: "Secure payroll management system implementing asymmetric encryption (RSA) for handling sensitive salary data with public/private key pairs.",
+    company: "Saber Interactive",
     technologies: ["Vue.js", "Electron.js", "TypeScript", "Playwright"],
-    featured: true,
   },
   {
     id: "4",
     title: "Educational Platform",
-    description: "Full-stack educational platform with course management",
-    longDescription: "Educa Space - A comprehensive educational platform built with Nuxt.js and NestJS, featuring course management, user progress tracking, and interactive learning modules.",
-    image: "/projects/education.jpg",
+    description: "Educa Space - Comprehensive educational platform featuring course management, user progress tracking, and interactive learning modules.",
+    company: "ItHire",
     technologies: ["Nuxt.js", "NestJS", "TypeORM", "PostgreSQL"],
   },
   {
     id: "5",
     title: "Flight & Hotel Booking",
-    description: "Travel booking application with Google authentication",
-    longDescription: "A modern travel booking application built from scratch with Vue.js, featuring flight and hotel search, booking management, and Google OAuth integration.",
-    image: "/projects/booking.jpg",
-    technologies: ["Vue.js", "TypeScript", "Webpack"],
+    description: "Modern travel booking application with flight and hotel search, booking management, and Google OAuth integration.",
+    company: "ItHire",
+    technologies: ["Vue.js", "TypeScript", "Webpack", "Google Auth"],
   },
   {
     id: "6",
     title: "Freelancer Platform",
-    description: "Platform connecting clients with developers via video chat",
-    longDescription: "A freelancer marketplace featuring real-time video chat using WebRTC and Socket.io, enabling seamless communication between clients and developers.",
-    image: "/projects/freelancer.jpg",
+    description: "Freelancer marketplace featuring real-time video chat using WebRTC and Socket.io for seamless communication between clients and developers.",
+    company: "ItHire",
     technologies: ["Next.js", "Socket.io", "WebRTC", "SCSS"],
   },
 ];
@@ -80,7 +77,6 @@ const allTechnologies = Array.from(
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div
@@ -91,188 +87,65 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.5, delay: index * 0.05 }}
       className="group relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative h-full bg-card rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(0,255,65,0.1)]">
-        {/* Image container */}
-        <div className="relative h-48 md:h-56 overflow-hidden bg-muted">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-6xl font-bold font-[family-name:var(--font-display)] text-foreground/5">
-              {project.title.charAt(0)}
+      <div className={`relative h-full bg-card rounded-2xl border overflow-hidden transition-all duration-500 hover:shadow-[0_0_40px_rgba(0,255,65,0.1)] ${
+        project.current 
+          ? "border-primary/50 hover:border-primary" 
+          : "border-border hover:border-primary/50"
+      }`}>
+        {/* Header with company badge */}
+        <div className="p-6 pb-4">
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div className="flex items-center gap-2">
+              <div className={`p-2 rounded-lg ${project.current ? "bg-primary/20" : "bg-muted"}`}>
+                <Building2 size={16} className={project.current ? "text-primary" : "text-muted-foreground"} />
+              </div>
+              <span className={`text-xs font-mono ${project.current ? "text-primary" : "text-muted-foreground"}`}>
+                {project.company}
+              </span>
             </div>
+            {project.current && (
+              <span className="px-2 py-1 bg-primary/20 text-primary text-xs font-mono rounded-full flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                Current
+              </span>
+            )}
+            {project.featured && !project.current && (
+              <span className="px-2 py-1 bg-secondary/20 text-secondary text-xs font-mono rounded-full">
+                Featured
+              </span>
+            )}
           </div>
-          {project.image && (
-            <Image
-              src={project.image}
-              alt={project.title}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          )}
+
+          <h3 className="text-xl font-bold font-[family-name:var(--font-display)] mb-3 group-hover:text-primary transition-colors">
+            {project.title}
+          </h3>
           
-          {/* Overlay on hover */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center gap-4"
-          >
-            {project.liveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 bg-primary rounded-full text-background hover:scale-110 transition-transform"
-                aria-label="View live site"
-              >
-                <ExternalLink size={20} />
-              </a>
-            )}
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 bg-foreground rounded-full text-background hover:scale-110 transition-transform"
-                aria-label="View source code"
-              >
-                <Github size={20} />
-              </a>
-            )}
-            {!project.liveUrl && !project.githubUrl && (
-              <span className="px-4 py-2 bg-muted rounded-full text-sm text-muted-foreground">
-                Private Project
-              </span>
-            )}
-          </motion.div>
-
-          {/* Featured badge */}
-          {project.featured && (
-            <div className="absolute top-4 left-4 px-3 py-1 bg-primary/90 text-background text-xs font-medium rounded-full">
-              Featured
-            </div>
-          )}
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {project.description}
+          </p>
         </div>
 
-        {/* Content */}
-        <div className="p-6">
-          <h3 className="text-xl font-bold font-[family-name:var(--font-display)] mb-2 group-hover:text-primary transition-colors">
-            {project.title}
-          </h3>
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-            {project.longDescription || project.description}
-          </p>
-
-          {/* Technologies */}
+        {/* Technologies */}
+        <div className="px-6 pb-6">
           <div className="flex flex-wrap gap-2">
-            {project.technologies.slice(0, 4).map((tech) => (
-              <span
-                key={tech}
-                className="px-2 py-1 bg-muted rounded-md text-xs text-muted-foreground border border-border/50"
-              >
-                {tech}
-              </span>
-            ))}
-            {project.technologies.length > 4 && (
-              <span className="px-2 py-1 bg-muted rounded-md text-xs text-primary border border-primary/20">
-                +{project.technologies.length - 4}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function FeaturedProject({ project }: { project: Project }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6 }}
-      className="relative group"
-    >
-      <div className="grid lg:grid-cols-2 gap-8 items-center">
-        {/* Image */}
-        <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted border border-border group-hover:border-primary/50 transition-colors">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/30" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-8xl font-bold font-[family-name:var(--font-display)] text-foreground/5">
-              {project.title.charAt(0)}
-            </div>
-          </div>
-          {project.image && (
-            <Image
-              src={project.image}
-              alt={project.title}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="space-y-4">
-          <span className="text-primary text-sm font-medium tracking-widest uppercase">
-            Featured Project
-          </span>
-          <h3 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-display)]">
-            {project.title}
-          </h3>
-          <p className="text-muted-foreground leading-relaxed">
-            {project.longDescription || project.description}
-          </p>
-
-          {/* Technologies */}
-          <div className="flex flex-wrap gap-2 pt-2">
             {project.technologies.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1.5 bg-muted rounded-lg text-sm text-primary border border-primary/20"
+                className="px-2 py-1 bg-muted rounded-md text-xs text-muted-foreground border border-border/50 hover:text-primary hover:border-primary/30 transition-colors"
               >
                 {tech}
               </span>
             ))}
           </div>
-
-          {/* Links */}
-          <div className="flex items-center gap-4 pt-4">
-            {project.liveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-background font-medium rounded-full hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] transition-all"
-              >
-                <ExternalLink size={18} />
-                View Live
-              </a>
-            )}
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground font-medium rounded-full hover:border-primary hover:text-primary transition-all"
-              >
-                <Github size={18} />
-                Source Code
-              </a>
-            )}
-          </div>
         </div>
+
+        {/* Decorative corner accent */}
+        <div className={`absolute top-0 right-0 w-16 h-16 opacity-10 ${
+          project.current ? "bg-primary" : "bg-secondary"
+        }`} style={{
+          clipPath: "polygon(100% 0, 0 0, 100% 100%)",
+        }} />
       </div>
     </motion.div>
   );
@@ -288,9 +161,6 @@ export default function Projects() {
     if (!selectedTech) return projects;
     return projects.filter((p) => p.technologies.includes(selectedTech));
   }, [selectedTech]);
-
-  const featuredProject = filteredProjects.find((p) => p.featured);
-  const otherProjects = filteredProjects.filter((p) => p !== featuredProject);
 
   return (
     <section id="projects" className="relative py-32 overflow-hidden">
@@ -315,8 +185,8 @@ export default function Projects() {
                 Things I&apos;ve <span className="text-gradient">built</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl">
-                A selection of projects I&apos;ve worked on, from internal enterprise tools
-                to consumer-facing applications.
+                A selection of projects from companies I&apos;ve worked with.
+                Due to confidentiality, details are limited but the impact was real.
               </p>
             </div>
 
@@ -394,25 +264,10 @@ export default function Projects() {
           </motion.p>
         )}
 
-        {/* Featured Project */}
-        <AnimatePresence mode="wait">
-          {featuredProject && !selectedTech && (
-            <motion.div
-              key="featured"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="mb-16"
-            >
-              <FeaturedProject project={featuredProject} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Project Grid */}
         <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
-            {(selectedTech ? filteredProjects : otherProjects).map((project, index) => (
+            {filteredProjects.map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} />
             ))}
           </AnimatePresence>
@@ -436,6 +291,19 @@ export default function Projects() {
             </button>
           </motion.div>
         )}
+
+        {/* Confidentiality note */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.5 }}
+          className="mt-12 p-4 bg-muted/50 rounded-xl border border-border/50 text-center"
+        >
+          <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+            <Briefcase size={14} />
+            <span>Some project details are confidential. More information available upon request.</span>
+          </p>
+        </motion.div>
       </div>
     </section>
   );

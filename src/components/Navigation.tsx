@@ -3,17 +3,22 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/lib/i18n/context";
 
-const navItems = [
-  { label: "About", href: "#about" },
-  { label: "Showcase", href: "#showcase" },
-  { label: "Projects", href: "#projects" },
-  { label: "Experience", href: "#experience" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+type NavKey = "about" | "showcase" | "projects" | "experience" | "skills" | "contact";
+
+const navItems: { key: NavKey; href: string }[] = [
+  { key: "about", href: "#about" },
+  { key: "showcase", href: "#showcase" },
+  { key: "projects", href: "#projects" },
+  { key: "experience", href: "#experience" },
+  { key: "skills", href: "#skills" },
+  { key: "contact", href: "#contact" },
 ];
 
 export default function Navigation() {
+  const { t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -51,35 +56,45 @@ export default function Navigation() {
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item, index) => (
               <motion.a
-                key={item.label}
+                key={item.key}
                 href={item.href}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 + 0.3 }}
                 className="text-muted-foreground hover:text-primary transition-colors duration-300 text-sm font-medium tracking-wide"
               >
-                {item.label}
+                {t.nav[item.key]}
               </motion.a>
             ))}
             <motion.a
-              href="/VahanMuradyan_CV.pdf"
+              href="/cv"
               target="_blank"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
               className="px-4 py-2 border border-primary text-primary rounded-full text-sm font-medium hover:bg-primary hover:text-background transition-all duration-300"
             >
-              Resume
+              {t.nav.resume}
             </motion.a>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              <LanguageSwitcher />
+            </motion.div>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-foreground"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="flex items-center gap-3 md:hidden">
+            <LanguageSwitcher />
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-foreground"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </motion.nav>
 
@@ -96,7 +111,7 @@ export default function Navigation() {
             <div className="flex flex-col gap-6">
               {navItems.map((item, index) => (
                 <motion.a
-                  key={item.label}
+                  key={item.key}
                   href={item.href}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -104,18 +119,18 @@ export default function Navigation() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="text-2xl font-[family-name:var(--font-display)] text-foreground hover:text-primary transition-colors"
                 >
-                  {item.label}
+                  {t.nav[item.key]}
                 </motion.a>
               ))}
               <motion.a
-                href="/VahanMuradyan_CV.pdf"
+                href="/cv"
                 target="_blank"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
                 className="mt-4 px-6 py-3 border border-primary text-primary rounded-full text-lg font-medium text-center hover:bg-primary hover:text-background transition-all duration-300"
               >
-                Resume
+                {t.nav.resume}
               </motion.a>
             </div>
           </motion.div>
@@ -124,4 +139,3 @@ export default function Navigation() {
     </>
   );
 }
-

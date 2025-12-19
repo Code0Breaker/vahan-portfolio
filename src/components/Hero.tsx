@@ -2,8 +2,11 @@
 
 import { motion } from "framer-motion";
 import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
 
 export default function Hero() {
+  const { t } = useLanguage();
+  
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Subtle vignette overlay */}
@@ -18,7 +21,7 @@ export default function Hero() {
         >
           <span className="inline-block px-4 py-2 rounded-full bg-black/50 backdrop-blur-sm border border-primary/30 text-sm text-primary font-mono">
             <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse mr-2" />
-            System.status = &quot;available&quot;
+            {t.hero.status}
           </span>
         </motion.div>
 
@@ -39,7 +42,7 @@ export default function Hero() {
           className="mb-8"
         >
           <h2 className="text-xl sm:text-2xl md:text-3xl text-muted-foreground font-light font-mono">
-            <span className="text-primary">&gt;</span> Software Engineer at{" "}
+            <span className="text-primary">&gt;</span> {t.hero.role}{" "}
             <span className="text-secondary font-medium">G42</span>
             <span className="animate-pulse">_</span>
           </h2>
@@ -51,8 +54,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="max-w-2xl mx-auto text-muted-foreground text-lg mb-12 leading-relaxed"
         >
-          Crafting exceptional web experiences with modern JavaScript frameworks.
-          4+ years of turning complex challenges into elegant, user-friendly solutions.
+          {t.hero.description}
         </motion.p>
 
         <motion.div
@@ -65,21 +67,21 @@ export default function Hero() {
             href="#contact"
             className="group relative px-8 py-4 bg-primary text-background font-semibold rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,65,0.6)] font-mono"
           >
-            <span className="relative z-10">./contact --init</span>
+            <span className="relative z-10">{t.hero.contact}</span>
           </a>
           <a
             href="#projects"
             className="px-8 py-4 border border-primary/50 text-primary font-semibold rounded-full hover:bg-primary/10 hover:border-primary transition-all duration-300 font-mono"
           >
-            cat projects.log
+            {t.hero.viewProjects}
           </a>
           <a
-            href="/resume.pdf"
-            download="Vahan_Muradyan_CV.pdf"
+            href="/cv"
+            target="_blank"
             className="inline-flex items-center gap-2 px-8 py-4 border border-secondary/50 text-secondary font-semibold rounded-full hover:bg-secondary/10 hover:border-secondary transition-all duration-300 font-mono"
           >
             <Download size={18} />
-            resume.pdf
+            {t.hero.getResume}
           </a>
         </motion.div>
 
@@ -91,7 +93,7 @@ export default function Hero() {
         >
           {[
             { icon: Github, href: "https://github.com/Code0Breaker", label: "GitHub" },
-            { icon: Linkedin, href: "https://www.linkedin.com/in/vahan-muradyan/", label: "LinkedIn" },
+            { icon: Linkedin, href: "https://www.linkedin.com/in/vahan-muradyan-1833331b7/", label: "LinkedIn" },
             { icon: Mail, href: "mailto:vahan0muradyan@gmail.com", label: "Email" },
           ].map((social, index) => (
             <motion.a
@@ -124,7 +126,7 @@ export default function Hero() {
           transition={{ duration: 1.5, repeat: Infinity }}
           className="flex flex-col items-center gap-2 text-primary hover:text-primary/80 transition-colors font-mono text-sm"
         >
-          <span className="tracking-widest">&gt;&gt; SCROLL</span>
+          <span className="tracking-widest">&gt;&gt; {t.hero.scroll}</span>
           <ArrowDown size={16} />
         </motion.a>
       </motion.div>

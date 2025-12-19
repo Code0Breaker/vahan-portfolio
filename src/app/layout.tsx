@@ -109,8 +109,8 @@ const jsonLd = {
   url: siteUrl,
   image: `${siteUrl}/photo.jpg`,
   sameAs: [
-    "https://www.linkedin.com/in/vahan-muradyan/",
-    "https://github.com/vahanmuradyan",
+    "https://www.linkedin.com/in/vahan-muradyan-1833331b7/",
+    "https://github.com/Code0Breaker",
   ],
   jobTitle: "Software Engineer",
   worksFor: {

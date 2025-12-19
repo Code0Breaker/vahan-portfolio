@@ -21,7 +21,7 @@ const contactInfo = [
     icon: Linkedin,
     label: "LinkedIn",
     value: "Vahan Muradyan",
-    href: "https://www.linkedin.com/in/vahan-muradyan/",
+    href: "https://www.linkedin.com/in/vahan-muradyan-1833331b7/",
     external: true,
   },
   {

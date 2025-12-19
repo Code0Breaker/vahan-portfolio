@@ -31,7 +31,7 @@ export default function Footer() {
           >
             {[
               { icon: Github, href: "https://github.com/Code0Breaker", label: "GitHub" },
-              { icon: Linkedin, href: "https://www.linkedin.com/in/vahan-muradyan/", label: "LinkedIn" },
+              { icon: Linkedin, href: "https://www.linkedin.com/in/vahan-muradyan-1833331b7/", label: "LinkedIn" },
               { icon: Mail, href: "mailto:vahan0muradyan@gmail.com", label: "Email" },
             ].map((social) => (
               <a

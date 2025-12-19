@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { LanguageProvider } from "@/lib/i18n/context";
 
 const MatrixRain = dynamic(() => import("./MatrixRain"), { ssr: false });
 const Preloader = dynamic(() => import("./Preloader"), { ssr: false });
@@ -11,7 +12,7 @@ const LiveChat = dynamic(() => import("./LiveChat"), { ssr: false });
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <LanguageProvider>
       <Preloader />
       <MatrixRain />
       <ScrollProgress />
@@ -27,6 +28,6 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
         // crispWebsiteId="YOUR_CRISP_ID"
       />
       {children}
-    </>
+    </LanguageProvider>
   );
 }
