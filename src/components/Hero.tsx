@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
 
 export default function Hero() {
   return (
@@ -63,7 +63,7 @@ export default function Hero() {
         >
           <a
             href="#contact"
-            className="group relative px-8 py-4 bg-primary text-background font-semibold rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,170,0.6)] font-mono"
+            className="group relative px-8 py-4 bg-primary text-background font-semibold rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,65,0.6)] font-mono"
           >
             <span className="relative z-10">./contact --init</span>
           </a>
@@ -72,6 +72,14 @@ export default function Hero() {
             className="px-8 py-4 border border-primary/50 text-primary font-semibold rounded-full hover:bg-primary/10 hover:border-primary transition-all duration-300 font-mono"
           >
             cat projects.log
+          </a>
+          <a
+            href="/resume.pdf"
+            download="Vahan_Muradyan_CV.pdf"
+            className="inline-flex items-center gap-2 px-8 py-4 border border-secondary/50 text-secondary font-semibold rounded-full hover:bg-secondary/10 hover:border-secondary transition-all duration-300 font-mono"
+          >
+            <Download size={18} />
+            resume.pdf
           </a>
         </motion.div>
 

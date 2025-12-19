@@ -1,8 +1,8 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import { ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState, useMemo } from "react";
+import { ExternalLink, Github, Filter, X } from "lucide-react";
 import Image from "next/image";
 
 export interface Project {
@@ -25,7 +25,7 @@ const projects: Project[] = [
     description: "A high-performance build download application using WebTorrent technology",
     longDescription: "Developed a complete build download product for Saber Interactive, resolving performance issues using WebTorrent and Electron.js. Optimized by separating UI and torrent functionalities, transitioning to Vue3, TypeScript, and Vite.",
     image: "/projects/build-download.jpg",
-    technologies: ["Electron.js", "Vue3", "TypeScript", "WebTorrent", "Better-SQLite"],
+    technologies: ["Electron.js", "Vue.js", "TypeScript", "WebTorrent", "SQLite"],
     featured: true,
   },
   {
@@ -34,7 +34,7 @@ const projects: Project[] = [
     description: "Internal procurement management and analytics platform",
     longDescription: "A comprehensive procurement management system with real-time analytics, built with Vue.js and GraphQL for efficient data handling and visualization.",
     image: "/projects/procurement.jpg",
-    technologies: ["Vue.js", "TypeScript", "GraphQL", "PrimeVue", "TeamCity"],
+    technologies: ["Vue.js", "TypeScript", "GraphQL", "PrimeVue"],
     featured: true,
   },
   {
@@ -43,7 +43,7 @@ const projects: Project[] = [
     description: "Secure employee payroll system with RSA encryption",
     longDescription: "A secure payroll management system implementing asymmetric encryption (RSA) for handling sensitive salary data with public/private key pairs.",
     image: "/projects/payroll.jpg",
-    technologies: ["Vue3", "Electron.js", "TypeScript", "RSA Encryption", "Playwright"],
+    technologies: ["Vue.js", "Electron.js", "TypeScript", "Playwright"],
     featured: true,
   },
   {
@@ -60,7 +60,7 @@ const projects: Project[] = [
     description: "Travel booking application with Google authentication",
     longDescription: "A modern travel booking application built from scratch with Vue.js, featuring flight and hotel search, booking management, and Google OAuth integration.",
     image: "/projects/booking.jpg",
-    technologies: ["Vue.js", "TypeScript", "Webpack", "Google Auth"],
+    technologies: ["Vue.js", "TypeScript", "Webpack"],
   },
   {
     id: "6",
@@ -68,9 +68,14 @@ const projects: Project[] = [
     description: "Platform connecting clients with developers via video chat",
     longDescription: "A freelancer marketplace featuring real-time video chat using WebRTC and Socket.io, enabling seamless communication between clients and developers.",
     image: "/projects/freelancer.jpg",
-    technologies: ["Next.js", "Socket.io", "WebRTC", "SCSS", "BEM"],
+    technologies: ["Next.js", "Socket.io", "WebRTC", "SCSS"],
   },
 ];
+
+// Extract all unique technologies for filtering
+const allTechnologies = Array.from(
+  new Set(projects.flatMap((p) => p.technologies))
+).sort();
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const ref = useRef(null);
@@ -80,14 +85,16 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <motion.div
       ref={ref}
+      layout
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`group relative ${project.featured ? "md:col-span-2 lg:col-span-1" : ""}`}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.5, delay: index * 0.05 }}
+      className="group relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative h-full bg-card rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(0,255,170,0.1)]">
+      <div className="relative h-full bg-card rounded-2xl border border-border overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(0,255,65,0.1)]">
         {/* Image container */}
         <div className="relative h-48 md:h-56 overflow-hidden bg-muted">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20" />
@@ -96,7 +103,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               {project.title.charAt(0)}
             </div>
           </div>
-          {/* Placeholder for actual images - replace src with your project screenshots */}
           {project.image && (
             <Image
               src={project.image}
@@ -248,7 +254,7 @@ function FeaturedProject({ project }: { project: Project }) {
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-background font-medium rounded-full hover:shadow-[0_0_30px_rgba(0,255,170,0.4)] transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-background font-medium rounded-full hover:shadow-[0_0_30px_rgba(0,255,65,0.4)] transition-all"
               >
                 <ExternalLink size={18} />
                 View Live
@@ -275,10 +281,16 @@ function FeaturedProject({ project }: { project: Project }) {
 export default function Projects() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [showAll, setShowAll] = useState(false);
+  const [selectedTech, setSelectedTech] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
-  const featuredProject = projects.find((p) => p.featured);
-  const otherProjects = showAll ? projects.filter((p) => p !== featuredProject) : projects.filter((p) => p !== featuredProject).slice(0, 5);
+  const filteredProjects = useMemo(() => {
+    if (!selectedTech) return projects;
+    return projects.filter((p) => p.technologies.includes(selectedTech));
+  }, [selectedTech]);
+
+  const featuredProject = filteredProjects.find((p) => p.featured);
+  const otherProjects = filteredProjects.filter((p) => p !== featuredProject);
 
   return (
     <section id="projects" className="relative py-32 overflow-hidden">
@@ -292,58 +304,135 @@ export default function Projects() {
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="mb-16"
+          className="mb-12"
         >
           <span className="text-primary text-sm font-medium tracking-widest uppercase mb-4 block">
             Portfolio
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-display)] mb-6">
-            Things I&apos;ve <span className="text-gradient">built</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl">
-            A selection of projects I&apos;ve worked on, from internal enterprise tools
-            to consumer-facing applications. Each project presented unique challenges
-            and learning opportunities.
-          </p>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-display)] mb-4">
+                Things I&apos;ve <span className="text-gradient">built</span>
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl">
+                A selection of projects I&apos;ve worked on, from internal enterprise tools
+                to consumer-facing applications.
+              </p>
+            </div>
+
+            {/* Filter toggle button */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all font-mono text-sm ${
+                showFilters || selectedTech
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+              }`}
+            >
+              <Filter size={16} />
+              {selectedTech ? `Filtered: ${selectedTech}` : "Filter by tech"}
+            </button>
+          </div>
         </motion.div>
 
-        {/* Featured Project */}
-        {featuredProject && (
-          <div className="mb-16">
-            <FeaturedProject project={featuredProject} />
-          </div>
+        {/* Filter chips */}
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mb-12 overflow-hidden"
+            >
+              <div className="flex flex-wrap gap-2 p-4 bg-card/50 rounded-xl border border-border">
+                <button
+                  onClick={() => setSelectedTech(null)}
+                  className={`px-3 py-1.5 rounded-full text-sm font-mono transition-all ${
+                    !selectedTech
+                      ? "bg-primary text-background"
+                      : "bg-muted text-muted-foreground hover:text-primary border border-border"
+                  }`}
+                >
+                  All
+                </button>
+                {allTechnologies.map((tech) => (
+                  <button
+                    key={tech}
+                    onClick={() => setSelectedTech(tech === selectedTech ? null : tech)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-mono transition-all ${
+                      selectedTech === tech
+                        ? "bg-primary text-background"
+                        : "bg-muted text-muted-foreground hover:text-primary border border-border"
+                    }`}
+                  >
+                    {tech}
+                  </button>
+                ))}
+                {selectedTech && (
+                  <button
+                    onClick={() => setSelectedTech(null)}
+                    className="px-3 py-1.5 rounded-full text-sm font-mono bg-accent/20 text-accent hover:bg-accent/30 transition-all flex items-center gap-1"
+                  >
+                    <X size={14} />
+                    Clear
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Results count */}
+        {selectedTech && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-muted-foreground text-sm mb-8 font-mono"
+          >
+            Showing {filteredProjects.length} project{filteredProjects.length !== 1 ? "s" : ""} with {selectedTech}
+          </motion.p>
         )}
 
-        {/* Project Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {otherProjects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
+        {/* Featured Project */}
+        <AnimatePresence mode="wait">
+          {featuredProject && !selectedTech && (
+            <motion.div
+              key="featured"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mb-16"
+            >
+              <FeaturedProject project={featuredProject} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Show more button */}
-        {projects.length > 6 && (
+        {/* Project Grid */}
+        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence mode="popLayout">
+            {(selectedTech ? filteredProjects : otherProjects).map((project, index) => (
+              <ProjectCard key={project.id} project={project} index={index} />
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* No results */}
+        {filteredProjects.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.5 }}
-            className="text-center mt-12"
+            animate={{ opacity: 1 }}
+            className="text-center py-16"
           >
+            <p className="text-muted-foreground font-mono">
+              No projects found with {selectedTech}
+            </p>
             <button
-              onClick={() => setShowAll(!showAll)}
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-foreground font-medium rounded-full hover:border-primary hover:text-primary transition-all"
+              onClick={() => setSelectedTech(null)}
+              className="mt-4 px-4 py-2 text-primary hover:underline font-mono"
             >
-              {showAll ? (
-                <>
-                  <ChevronLeft size={18} />
-                  Show Less
-                </>
-              ) : (
-                <>
-                  Show All Projects
-                  <ChevronRight size={18} />
-                </>
-              )}
+              Clear filter
             </button>
           </motion.div>
         )}
@@ -351,4 +440,3 @@ export default function Projects() {
     </section>
   );
 }
-
