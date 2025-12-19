@@ -28,8 +28,8 @@ const showcaseProjects: ShowcaseProject[] = [
     technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
     myRole: "Full Stack Developer",
     team: [
-      { role: "Project Manager", name: "Armine Petrosyan" },
-      { role: "UI/UX Designer", name: "Diana Yeghikyan" },
+      { role: "Project Manager", name: "Diana Yeghikyan" },
+      { role: "UI/UX Designer", name: "Armine Petrosyan" },
       { role: "Full Stack Developer", name: "Vahan Muradyan" },
     ],
   },
@@ -53,7 +53,7 @@ const showcaseProjects: ShowcaseProject[] = [
     technologies: ["Next.js", "React", "TypeScript", "PayloadCMS"],
     myRole: "Full Stack Developer",
     team: [
-      { role: "Project Lead", name: "Client" },
+      { role: "HTML/CSS Developer", name: "Harut Shahnubaryan" },
       { role: "Full Stack Developer", name: "Vahan Muradyan" },
     ],
   },
@@ -107,19 +107,19 @@ function DeviceFrame({ url, title }: DeviceFrameProps) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full max-w-full overflow-hidden">
       {/* Browser Chrome */}
       <div className="bg-[#1a1a24] rounded-t-xl border border-border border-b-0">
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-2 sm:px-4 py-3">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500/80" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
             <div className="w-3 h-3 rounded-full bg-green-500/80" />
           </div>
-          <div className="flex-1 mx-4">
-            <div className="flex items-center gap-2 px-4 py-1.5 bg-muted rounded-lg max-w-md mx-auto">
-              <div className="w-4 h-4 rounded bg-primary/20" />
-              <span className="text-xs text-muted-foreground font-mono truncate">{url}</span>
+          <div className="flex-1 mx-2 sm:mx-4 min-w-0">
+            <div className="flex items-center gap-2 px-2 sm:px-4 py-1.5 bg-muted rounded-lg">
+              <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-primary/20 flex-shrink-0" />
+              <span className="text-[10px] sm:text-xs text-muted-foreground font-mono truncate">{url}</span>
             </div>
           </div>
           <button
@@ -135,8 +135,8 @@ function DeviceFrame({ url, title }: DeviceFrameProps) {
       {/* Content Area */}
       <div 
         ref={containerRef}
-        className="relative bg-white rounded-b-xl border border-border border-t-0 overflow-hidden"
-        style={{ height: "350px" }}
+        className="relative bg-white rounded-b-xl border border-border border-t-0 overflow-hidden w-full max-w-full"
+        style={{ height: "300px" }}
       >
         {/* Loading State */}
         {isLoading && !hasError && (
@@ -203,11 +203,11 @@ function ProjectCard({ project, index }: { project: ShowcaseProject; index: numb
       transition={{ duration: 0.6, delay: index * 0.15 }}
       className="group"
     >
-      <div className="bg-card rounded-2xl border border-border overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-[0_0_60px_rgba(0,255,65,0.1)]">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-[0_0_60px_rgba(0,255,65,0.1)] w-full max-w-full">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <div>
-            <h3 className="text-lg font-bold font-[family-name:var(--font-display)] group-hover:text-primary transition-colors">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-3 border-b border-border">
+          <div className="min-w-0">
+            <h3 className="text-lg font-bold font-[family-name:var(--font-display)] group-hover:text-primary transition-colors truncate">
               {project.title}
             </h3>
             <p className="text-xs text-muted-foreground font-mono mt-1">
@@ -218,15 +218,16 @@ function ProjectCard({ project, index }: { project: ShowcaseProject; index: numb
             href={project.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 text-primary rounded-lg font-mono text-sm hover:bg-primary hover:text-background transition-all"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 text-primary rounded-lg font-mono text-sm hover:bg-primary hover:text-background transition-all flex-shrink-0"
           >
             <ExternalLink size={16} />
-            Visit Site
+            <span className="hidden sm:inline">Visit Site</span>
+            <span className="sm:hidden">Visit</span>
           </a>
         </div>
 
         {/* Preview Area */}
-        <div className="p-4">
+        <div className="p-2 sm:p-4">
           <DeviceFrame url={project.url} title={project.title} />
         </div>
 
@@ -294,7 +295,7 @@ export default function ProjectShowcase() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="showcase" className="relative py-32 overflow-hidden">
+    <section id="showcase" className="relative py-32 overflow-x-hidden">
       {/* Dark overlay for readability */}
       <div className="absolute inset-0 bg-background/80 z-0" />
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent z-10" />
