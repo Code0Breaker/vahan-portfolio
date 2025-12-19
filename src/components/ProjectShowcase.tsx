@@ -1,8 +1,13 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import { ExternalLink, Monitor, Smartphone, Tablet, Maximize2, X, RefreshCw } from "lucide-react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import { ExternalLink, RefreshCw, Users } from "lucide-react";
+
+interface TeamMember {
+  role: string;
+  name?: string; // Optional - can show just role if preferred
+}
 
 interface ShowcaseProject {
   id: string;
@@ -10,63 +15,88 @@ interface ShowcaseProject {
   description: string;
   url: string;
   technologies: string[];
+  myRole: string;
+  team?: TeamMember[];
 }
 
 const showcaseProjects: ShowcaseProject[] = [
   {
     id: "1",
     title: "Aikikai Armenia",
-    description: "Official website for the Aikido Federation of Armenia. Features 3D visualizations and modern design.",
+    description: "Official website for the Aikido Federation of Armenia. Features modern design and smooth animations.",
     url: "https://aikikai.am",
-    technologies: ["Vue3", "TypeScript", "Three.js", "PayloadCMS"],
+    technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
+    myRole: "Full Stack Developer",
+    team: [
+      { role: "Project Manager", name: "Armine Petrosyan" },
+      { role: "UI/UX Designer", name: "Diana Yeghikyan" },
+      { role: "Full Stack Developer", name: "Vahan Muradyan" },
+    ],
   },
   {
     id: "2",
     title: "Terlemezyan Art School",
     description: "Website for the prestigious Terlemezyan Art School, showcasing student works and school information.",
     url: "https://terlemezyan.com",
-    technologies: ["Vue.js", "SCSS", "PayloadCMS"],
+    technologies: ["Next.js", "React", "TypeScript", "SCSS"],
+    myRole: "Full Stack Developer",
+    team: [
+      { role: "Project Lead", name: "Client" },
+      { role: "Full Stack Developer", name: "Vahan Muradyan" },
+    ],
   },
   {
     id: "3",
     title: "DCP Armenia",
     description: "Political party website with modern, responsive design and content management system.",
     url: "https://dcp.am",
-    technologies: ["Vue.js", "PayloadCMS", "MongoDB", "NGINX"],
+    technologies: ["Next.js", "React", "TypeScript", "PayloadCMS"],
+    myRole: "Full Stack Developer",
+    team: [
+      { role: "Project Lead", name: "Client" },
+      { role: "Full Stack Developer", name: "Vahan Muradyan" },
+    ],
   },
 ];
 
-type DeviceType = "desktop" | "tablet" | "mobile";
+// Desktop viewport width
+const VIEWPORT_WIDTH = 1440;
 
 interface DeviceFrameProps {
   url: string;
   title: string;
-  device: DeviceType;
-  isFullscreen?: boolean;
 }
 
-function DeviceFrame({ url, title, device, isFullscreen = false }: DeviceFrameProps) {
+function DeviceFrame({ url, title }: DeviceFrameProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [scale, setScale] = useState(0.5);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const deviceStyles = {
-    desktop: {
-      width: isFullscreen ? "100%" : "100%",
-      height: isFullscreen ? "calc(100vh - 120px)" : "400px",
-      scale: isFullscreen ? 1 : 0.6,
-    },
-    tablet: {
-      width: "768px",
-      height: isFullscreen ? "calc(100vh - 120px)" : "500px",
-      scale: isFullscreen ? 1 : 0.5,
-    },
-    mobile: {
-      width: "375px",
-      height: isFullscreen ? "calc(100vh - 120px)" : "600px",
-      scale: isFullscreen ? 1 : 0.45,
-    },
-  };
+  // Calculate scale based on container width
+  const updateScale = useCallback(() => {
+    if (containerRef.current) {
+      const containerWidth = containerRef.current.offsetWidth;
+      const newScale = containerWidth / VIEWPORT_WIDTH;
+      setScale(Math.min(newScale, 1));
+    }
+  }, []);
+
+  // Update scale on mount and resize
+  useEffect(() => {
+    updateScale();
+    
+    const handleResize = () => updateScale();
+    window.addEventListener("resize", handleResize);
+    
+    const timer = setTimeout(updateScale, 100);
+    
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timer);
+    };
+  }, [updateScale]);
 
   const handleRefresh = () => {
     setIsLoading(true);
@@ -77,7 +107,7 @@ function DeviceFrame({ url, title, device, isFullscreen = false }: DeviceFramePr
   };
 
   return (
-    <div className={`relative ${isFullscreen ? "h-full" : ""}`}>
+    <div className="relative">
       {/* Browser Chrome */}
       <div className="bg-[#1a1a24] rounded-t-xl border border-border border-b-0">
         <div className="flex items-center justify-between px-4 py-3">
@@ -104,10 +134,9 @@ function DeviceFrame({ url, title, device, isFullscreen = false }: DeviceFramePr
 
       {/* Content Area */}
       <div 
-        className="relative bg-muted rounded-b-xl border border-border border-t-0 overflow-hidden"
-        style={{ 
-          height: deviceStyles[device].height,
-        }}
+        ref={containerRef}
+        className="relative bg-white rounded-b-xl border border-border border-t-0 overflow-hidden"
+        style={{ height: "350px" }}
       >
         {/* Loading State */}
         {isLoading && !hasError && (
@@ -135,29 +164,28 @@ function DeviceFrame({ url, title, device, isFullscreen = false }: DeviceFramePr
           </div>
         )}
 
-        {/* Iframe Container with Scaling */}
-        <div 
-          className="origin-top-left"
+        {/* Iframe */}
+        <iframe
+          ref={iframeRef}
+          src={url}
+          title={title}
+          className="absolute top-0 left-0 border-0 origin-top-left"
           style={{
-            width: device === "desktop" ? "100%" : deviceStyles[device].width,
-            transform: isFullscreen ? "none" : `scale(${deviceStyles[device].scale})`,
-            height: isFullscreen ? "100%" : `calc(100% / ${deviceStyles[device].scale})`,
+            width: `${VIEWPORT_WIDTH}px`,
+            height: "1000px",
+            transform: `scale(${scale})`,
           }}
-        >
-          <iframe
-            ref={iframeRef}
-            src={url}
-            title={title}
-            className="w-full h-full bg-white"
-            onLoad={() => setIsLoading(false)}
-            onError={() => {
-              setIsLoading(false);
-              setHasError(true);
-            }}
-            sandbox="allow-scripts allow-same-origin allow-popups"
-            loading="lazy"
-          />
-        </div>
+          onLoad={() => {
+            setIsLoading(false);
+            updateScale();
+          }}
+          onError={() => {
+            setIsLoading(false);
+            setHasError(true);
+          }}
+          sandbox="allow-scripts allow-same-origin allow-popups"
+          loading="lazy"
+        />
       </div>
     </div>
   );
@@ -166,166 +194,98 @@ function DeviceFrame({ url, title, device, isFullscreen = false }: DeviceFramePr
 function ProjectCard({ project, index }: { project: ShowcaseProject; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const [device, setDevice] = useState<DeviceType>("desktop");
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
   return (
-    <>
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0, y: 40 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6, delay: index * 0.15 }}
-        className="group"
-      >
-        <div className="bg-card rounded-2xl border border-border overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-[0_0_60px_rgba(0,255,65,0.1)]">
-          {/* Device Switcher & Actions */}
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setDevice("desktop")}
-                className={`p-2 rounded-lg transition-colors ${
-                  device === "desktop" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-primary"
-                }`}
-                title="Desktop View"
-              >
-                <Monitor size={18} />
-              </button>
-              <button
-                onClick={() => setDevice("tablet")}
-                className={`p-2 rounded-lg transition-colors ${
-                  device === "tablet" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-primary"
-                }`}
-                title="Tablet View"
-              >
-                <Tablet size={18} />
-              </button>
-              <button
-                onClick={() => setDevice("mobile")}
-                className={`p-2 rounded-lg transition-colors ${
-                  device === "mobile" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-primary"
-                }`}
-                title="Mobile View"
-              >
-                <Smartphone size={18} />
-              </button>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setIsFullscreen(true)}
-                className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-                title="Fullscreen Preview"
-              >
-                <Maximize2 size={18} />
-              </button>
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-                title="Open in New Tab"
-              >
-                <ExternalLink size={18} />
-              </a>
-            </div>
-          </div>
-
-          {/* Preview Area */}
-          <div className="p-4">
-            <DeviceFrame url={project.url} title={project.title} device={device} />
-          </div>
-
-          {/* Project Info */}
-          <div className="p-6 border-t border-border">
-            <h3 className="text-xl font-bold font-[family-name:var(--font-display)] mb-2 group-hover:text-primary transition-colors">
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay: index * 0.15 }}
+      className="group"
+    >
+      <div className="bg-card rounded-2xl border border-border overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-[0_0_60px_rgba(0,255,65,0.1)]">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <div>
+            <h3 className="text-lg font-bold font-[family-name:var(--font-display)] group-hover:text-primary transition-colors">
               {project.title}
             </h3>
-            <p className="text-muted-foreground text-sm mb-4">
-              {project.description}
+            <p className="text-xs text-muted-foreground font-mono mt-1">
+              My Role: <span className="text-primary">{project.myRole}</span>
             </p>
-            <div className="flex flex-wrap gap-2">
-              {project.technologies.map((tech) => (
-                <span
-                  key={tech}
-                  className="px-2 py-1 bg-muted rounded-md text-xs text-primary border border-primary/20 font-mono"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
           </div>
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 text-primary rounded-lg font-mono text-sm hover:bg-primary hover:text-background transition-all"
+          >
+            <ExternalLink size={16} />
+            Visit Site
+          </a>
         </div>
-      </motion.div>
 
-      {/* Fullscreen Modal */}
-      {isFullscreen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-xl"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <div className="flex items-center gap-4">
-              <h3 className="text-lg font-bold font-[family-name:var(--font-display)]">
-                {project.title}
-              </h3>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setDevice("desktop")}
-                  className={`p-2 rounded-lg transition-colors ${
-                    device === "desktop" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-primary"
-                  }`}
-                >
-                  <Monitor size={18} />
-                </button>
-                <button
-                  onClick={() => setDevice("tablet")}
-                  className={`p-2 rounded-lg transition-colors ${
-                    device === "tablet" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-primary"
-                  }`}
-                >
-                  <Tablet size={18} />
-                </button>
-                <button
-                  onClick={() => setDevice("mobile")}
-                  className={`p-2 rounded-lg transition-colors ${
-                    device === "mobile" ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-primary"
-                  }`}
-                >
-                  <Smartphone size={18} />
-                </button>
+        {/* Preview Area */}
+        <div className="p-4">
+          <DeviceFrame url={project.url} title={project.title} />
+        </div>
+
+        {/* Project Info */}
+        <div className="p-6 border-t border-border">
+          <p className="text-muted-foreground text-sm mb-4">
+            {project.description}
+          </p>
+          
+          {/* Technologies */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {project.technologies.map((tech) => (
+              <span
+                key={tech}
+                className="px-2 py-1 bg-muted rounded-md text-xs text-primary border border-primary/20 font-mono"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          {/* Team Section */}
+          {project.team && project.team.length > 0 && (
+            <div className="pt-4 border-t border-border/50">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                <Users size={14} />
+                <span className="font-mono uppercase tracking-wider">Team</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {project.team.map((member, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs ${
+                      member.name === "Vahan Muradyan"
+                        ? "bg-primary/10 border border-primary/30 text-primary"
+                        : "bg-muted border border-border text-muted-foreground"
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                      member.name === "Vahan Muradyan"
+                        ? "bg-primary text-background"
+                        : "bg-border text-muted-foreground"
+                    }`}>
+                      {member.name ? member.name.charAt(0) : member.role.charAt(0)}
+                    </div>
+                    <div>
+                      <span className="font-medium">{member.role}</span>
+                      {member.name && member.name !== "Client" && (
+                        <span className="opacity-70"> · {member.name}</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-background rounded-lg font-mono text-sm"
-              >
-                <ExternalLink size={16} />
-                Open Site
-              </a>
-              <button
-                onClick={() => setIsFullscreen(false)}
-                className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-              >
-                <X size={24} />
-              </button>
-            </div>
-          </div>
-
-          {/* Fullscreen Preview */}
-          <div className="p-4 h-[calc(100vh-80px)]">
-            <div className={`mx-auto h-full ${device === "mobile" ? "max-w-[375px]" : device === "tablet" ? "max-w-[768px]" : "w-full"}`}>
-              <DeviceFrame url={project.url} title={project.title} device={device} isFullscreen />
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </>
+          )}
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -354,8 +314,7 @@ export default function ProjectShowcase() {
             See them in <span className="text-gradient">action</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Interactive previews of some live projects I&apos;ve built. 
-            Switch between device views or open in fullscreen to explore.
+            Interactive previews of live projects I&apos;ve built with Next.js and React.
           </p>
         </motion.div>
 
@@ -368,4 +327,3 @@ export default function ProjectShowcase() {
     </section>
   );
 }
-
