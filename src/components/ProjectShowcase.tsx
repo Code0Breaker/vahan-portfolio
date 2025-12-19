@@ -29,8 +29,8 @@ const showcaseProjects: ShowcaseProject[] = [
     technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
     myRole: "Full Stack Developer",
     team: [
-      { role: "Project Manager", name: "Armine Petrosyan", linkedin: "https://www.linkedin.com/in/armine-petrosyan-160146216/" },
-      { role: "UI/UX Designer", name: "Diana Yeghikyan", linkedin: "https://www.linkedin.com/in/diana-yeghikyan-968103182/" },
+      { role: "Project Manager", name: "Diana Yeghikyan", linkedin: "https://www.linkedin.com/in/diana-yeghikyan-968103182/" },
+      { role: "UI/UX Designer", name: "Armine Petrosyan", linkedin: "https://www.linkedin.com/in/armine-petrosyan-160146216/" },
       { role: "Full Stack Developer", name: "Vahan Muradyan", linkedin: "https://www.linkedin.com/in/vahan-muradyan/" },
     ],
   },
