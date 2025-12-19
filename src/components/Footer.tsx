@@ -30,7 +30,7 @@ export default function Footer() {
             className="flex items-center gap-4"
           >
             {[
-              { icon: Github, href: "https://github.com/vahanmuradyan", label: "GitHub" },
+              { icon: Github, href: "https://github.com/Code0Breaker", label: "GitHub" },
               { icon: Linkedin, href: "https://www.linkedin.com/in/vahan-muradyan/", label: "LinkedIn" },
               { icon: Mail, href: "mailto:vahan0muradyan@gmail.com", label: "Email" },
             ].map((social) => (

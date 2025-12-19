@@ -82,7 +82,7 @@ export default function Hero() {
           className="flex items-center justify-center gap-6"
         >
           {[
-            { icon: Github, href: "https://github.com/vahanmuradyan", label: "GitHub" },
+            { icon: Github, href: "https://github.com/Code0Breaker", label: "GitHub" },
             { icon: Linkedin, href: "https://www.linkedin.com/in/vahan-muradyan/", label: "LinkedIn" },
             { icon: Mail, href: "mailto:vahan0muradyan@gmail.com", label: "Email" },
           ].map((social, index) => (
