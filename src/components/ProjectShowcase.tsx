@@ -57,6 +57,17 @@ const showcaseProjects: ShowcaseProject[] = [
       { role: "Full Stack Developer", name: "Vahan Muradyan", linkedin: "https://www.linkedin.com/in/vahan-muradyan/" },
     ],
   },
+  {
+    id: "4",
+    title: "AnimeHub",
+    description: "Anime streaming platform built by order with modern UI, content management, and real-time features.",
+    url: "https://animehub.club",
+    technologies: ["Next.js", "React", "TypeScript", "NestJS", "PostgreSQL"],
+    myRole: "Full Stack Developer",
+    team: [
+      { role: "Full Stack Developer", name: "Vahan Muradyan", linkedin: "https://www.linkedin.com/in/vahan-muradyan/" },
+    ],
+  },
 ];
 
 // Desktop viewport width
