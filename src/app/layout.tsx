@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Syne, Outfit } from "next/font/google";
-import ClientWrapper from "@/components/ClientWrapper";
+import { ClientWrapper } from "@/components/layout";
 import "./globals.css";
 
 const syne = Syne({
@@ -98,6 +98,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
+  manifest: "/manifest.json",
   category: "technology",
 };
 

@@ -3,31 +3,8 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Code2, Rocket, Users, Lightbulb } from "lucide-react";
 import Image from "next/image";
-
-const highlights = [
-  {
-    icon: Code2,
-    title: "Clean Code",
-    description: "Writing maintainable, scalable code that stands the test of time",
-  },
-  {
-    icon: Rocket,
-    title: "Performance",
-    description: "Optimizing applications for speed and efficiency",
-  },
-  {
-    icon: Users,
-    title: "Collaboration",
-    description: "Turning ideas into reality through effective teamwork",
-  },
-  {
-    icon: Lightbulb,
-    title: "Innovation",
-    description: "Always exploring new technologies and approaches",
-  },
-];
+import { highlights, aboutTechBadges } from "@/data/about";
 
 export default function About() {
   const ref = useRef(null);
@@ -133,7 +110,7 @@ export default function About() {
 
             <div className="pt-4">
               <div className="flex flex-wrap gap-3">
-                {["React", "Vue", "Next.js", "TypeScript", "Node.js", "GraphQL"].map((tech, i) => (
+                {aboutTechBadges.map((tech, i) => (
                   <motion.span
                     key={tech}
                     initial={{ opacity: 0, scale: 0.8 }}

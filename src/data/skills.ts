@@ -1,0 +1,96 @@
+import {
+  Monitor,
+  Server,
+  Database,
+  Wrench,
+  Shield,
+  Zap,
+} from "lucide-react";
+import type { SkillCategory } from "@/types";
+
+export const skillCategories: SkillCategory[] = [
+  {
+    icon: Monitor,
+    title: "Frontend",
+    color: "primary",
+    skills: [
+      "JavaScript",
+      "TypeScript",
+      "React.js",
+      "Next.js",
+      "Vue.js (Vue2, Vue3)",
+      "Nuxt.js",
+      "SCSS",
+      "MUI",
+      "Vuetify",
+      "PrimeVue",
+      "Three.js",
+    ],
+  },
+  {
+    icon: Server,
+    title: "Backend",
+    color: "secondary",
+    skills: [
+      "Node.js",
+      "NestJS",
+      "TypeORM",
+      "GraphQL",
+      "PayloadCMS",
+      "REST APIs",
+    ],
+  },
+  {
+    icon: Database,
+    title: "Database",
+    color: "accent",
+    skills: [
+      "PostgreSQL",
+      "MongoDB",
+      "Better-SQLite",
+    ],
+  },
+  {
+    icon: Zap,
+    title: "Desktop & Real-time",
+    color: "primary",
+    skills: [
+      "Electron.js",
+      "WebTorrent",
+      "Socket.io",
+      "WebRTC",
+      "PWA",
+    ],
+  },
+  {
+    icon: Wrench,
+    title: "Tools & DevOps",
+    color: "secondary",
+    skills: [
+      "Git",
+      "GitHub",
+      "GitLab",
+      "BitBucket",
+      "Webpack",
+      "Vite",
+      "ESLint",
+      "Prettier",
+      "NGINX",
+      "Cloudflare",
+      "CI/CD",
+      "TeamCity",
+    ],
+  },
+  {
+    icon: Shield,
+    title: "Testing & Security",
+    color: "accent",
+    skills: [
+      "Playwright",
+      "Cypress",
+      "RSA Encryption",
+      "SSL/HTTPS",
+      "Google Auth",
+    ],
+  },
+];

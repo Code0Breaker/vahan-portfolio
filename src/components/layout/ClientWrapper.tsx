@@ -3,12 +3,12 @@
 import dynamic from "next/dynamic";
 import { LanguageProvider } from "@/lib/i18n/context";
 
-const MatrixRain = dynamic(() => import("./MatrixRain"), { ssr: false });
-const Preloader = dynamic(() => import("./Preloader"), { ssr: false });
-const ScrollProgress = dynamic(() => import("./ScrollProgress"), { ssr: false });
-const BackToTop = dynamic(() => import("./BackToTop"), { ssr: false });
-const CustomCursor = dynamic(() => import("./CustomCursor"), { ssr: false });
-const LiveChat = dynamic(() => import("./LiveChat"), { ssr: false });
+const MatrixRain = dynamic(() => import("@/components/effects/MatrixRain"), { ssr: false });
+const Preloader = dynamic(() => import("@/components/effects/Preloader"), { ssr: false });
+const ScrollProgress = dynamic(() => import("@/components/effects/ScrollProgress"), { ssr: false });
+const BackToTop = dynamic(() => import("@/components/effects/BackToTop"), { ssr: false });
+const CustomCursor = dynamic(() => import("@/components/effects/CustomCursor"), { ssr: false });
+const LiveChat = dynamic(() => import("@/components/widgets/LiveChat"), { ssr: false });
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
   return (

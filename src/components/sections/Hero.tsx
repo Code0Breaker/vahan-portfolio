@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
+import { ArrowDown, Download } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
+import { socialLinks } from "@/data/social";
 
 export default function Hero() {
   const { t } = useLanguage();
@@ -91,11 +92,7 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="flex items-center justify-center gap-6"
         >
-          {[
-            { icon: Github, href: "https://github.com/Code0Breaker", label: "GitHub" },
-            { icon: Linkedin, href: "https://www.linkedin.com/in/vahan-muradyan-1833331b7/", label: "LinkedIn" },
-            { icon: Mail, href: "mailto:vahan0muradyan@gmail.com", label: "Email" },
-          ].map((social, index) => (
+          {socialLinks.map((social, index) => (
             <motion.a
               key={social.label}
               href={social.href}
