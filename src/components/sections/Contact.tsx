@@ -1,114 +1,110 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Send, ExternalLink } from "lucide-react";
-import { contactInfo } from "@/data/contact";
+import { useEffect, useState } from "react";
+import { ArrowUpRight, Check, Copy, Mail } from "lucide-react";
+import SectionHeader from "@/components/ui/SectionHeader";
+import Tilt from "@/components/ui/Tilt";
+import { useLanguage } from "@/lib/i18n/context";
+import { EMAIL, contactInfo } from "@/data/contact";
 
 export default function Contact() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { t } = useLanguage();
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const id = window.setTimeout(() => setCopied(false), 2000);
+    return () => window.clearTimeout(id);
+  }, [copied]);
 
   return (
-    <section id="contact" className="relative py-32 overflow-hidden">
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-0" />
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent z-10" />
+    <section id="contact" className="shell py-24 md:py-32">
+      <SectionHeader
+        index={6}
+        eyebrow={t.contact.eyebrow}
+        heading={t.contact.heading}
+        description={t.contact.description}
+      />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <span className="text-primary text-sm font-medium tracking-widest uppercase mb-4 block">
-            Contact
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-display)] mb-6">
-            Let&apos;s <span className="text-gradient">connect</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            I&apos;m always open to discussing new projects, creative ideas, or opportunities
-            to be part of your vision. Feel free to reach out!
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
-          {contactInfo.map((item, index) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+      <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <dl className="reveal border-t border-rule lg:col-span-7">
+          {contactInfo.map((item) => (
+            <div
+              key={item.id}
+              className="flex flex-col gap-1 border-b border-rule py-4 sm:flex-row sm:items-baseline sm:gap-6"
             >
-              {item.href ? (
-                <a
-                  href={item.href}
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                  className="flex items-center gap-4 p-6 bg-card rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 group"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <item.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm text-muted-foreground block mb-1">
-                      {item.label}
-                    </span>
-                    <span className="text-foreground font-medium group-hover:text-primary transition-colors">
-                      {item.value}
-                    </span>
-                  </div>
-                  {item.external && (
-                    <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                  )}
-                </a>
-              ) : (
-                <div className="flex items-center gap-4 p-6 bg-card rounded-2xl border border-border">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <item.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <span className="text-sm text-muted-foreground block mb-1">
-                      {item.label}
-                    </span>
-                    <span className="text-foreground font-medium">{item.value}</span>
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center"
-        >
-          <div className="inline-block p-px rounded-2xl bg-gradient-to-r from-primary via-secondary to-accent">
-            <div className="px-8 py-12 bg-card rounded-2xl">
-              <h3 className="text-2xl md:text-3xl font-bold font-[family-name:var(--font-display)] mb-4">
-                Ready to work together?
-              </h3>
-              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-                Whether you have a project in mind or just want to chat, I&apos;d love to hear from you.
-              </p>
-              <a
-                href="mailto:vahan0muradyan@gmail.com"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-background font-semibold rounded-full hover:shadow-[0_0_30px_rgba(0,255,170,0.4)] transition-all duration-300"
-              >
-                <Send className="w-4 h-4" />
-                Send me a message
-              </a>
+              <dt className="t-eyebrow w-28 shrink-0 text-muted">
+                {t.content.contactLabels[item.id]}
+              </dt>
+              <dd className="text-[0.9375rem]">
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    className="group inline-flex items-center gap-1.5 underline decoration-rule underline-offset-4 transition-colors hover:decoration-ink"
+                  >
+                    {item.value}
+                    {item.external && (
+                      <ArrowUpRight
+                        size={13}
+                        strokeWidth={2}
+                        className="text-muted transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      />
+                    )}
+                  </a>
+                ) : (
+                  <span>{item.value}</span>
+                )}
+              </dd>
             </div>
-          </div>
-        </motion.div>
+          ))}
+        </dl>
+
+        {/* Compose panel: the address, ready to use, in the same instrument
+            language as the rest of the chrome. Tilted, lit above the rain. */}
+        <div className="reveal self-start lg:col-span-5">
+          <Tilt className="panel-glow on-panel bg-panel text-surface">
+            <div className="flex items-center gap-3 border-b border-rule-dark px-4 py-2.5">
+              <span className="t-eyebrow text-muted-dark">TO</span>
+              <span className="t-meta flex-1 truncate text-surface">
+                {t.contact.ctaNote}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard?.writeText(EMAIL);
+                  setCopied(true);
+                }}
+                aria-label={t.ui.copyEmail}
+                className="p-1 text-muted-dark transition-colors hover:text-surface"
+              >
+                {copied ? (
+                  <Check size={13} strokeWidth={2} />
+                ) : (
+                  <Copy size={13} strokeWidth={2} />
+                )}
+              </button>
+            </div>
+
+            <div className="p-4">
+              <a
+                href={`mailto:${EMAIL}`}
+                className="group flex items-center justify-center gap-2 bg-surface px-5 py-3.5 text-sm font-medium text-paper transition-colors hover:bg-accent"
+              >
+                <Mail size={15} strokeWidth={1.75} />
+                {t.contact.cta}
+              </a>
+              <p
+                className="t-meta mt-3 text-center text-muted-dark"
+                aria-live="polite"
+              >
+                {copied ? t.ui.copied : " "}
+              </p>
+            </div>
+          </Tilt>
+        </div>
       </div>
     </section>
   );
 }
-

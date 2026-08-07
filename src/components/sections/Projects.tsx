@@ -1,242 +1,194 @@
 "use client";
 
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState, useMemo } from "react";
-import { Filter, X, Building2, Briefcase } from "lucide-react";
-import { projects, allTechnologies } from "@/data/projects";
-import type { Project } from "@/types";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Minus, Plus } from "lucide-react";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { useLanguage } from "@/lib/i18n/context";
+import { allTechnologies, projects } from "@/data/projects";
+import type { ProjectId } from "@/types";
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
+export default function Projects() {
+  const { t } = useLanguage();
+  const [filter, setFilter] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<ProjectId | null>(null);
+
+  const visible = useMemo(
+    () =>
+      filter
+        ? projects.filter((p) => p.technologies.includes(filter))
+        : projects,
+    [filter],
+  );
 
   return (
-    <motion.div
-      ref={ref}
-      layout
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.5, delay: index * 0.05 }}
-      className="group relative"
-    >
-      <div className={`relative h-full bg-card rounded-2xl border overflow-hidden transition-all duration-500 hover:shadow-[0_0_40px_rgba(0,255,65,0.1)] ${
-        project.current 
-          ? "border-primary/50 hover:border-primary" 
-          : "border-border hover:border-primary/50"
-      }`}>
-        {/* Header with company badge */}
-        <div className="p-6 pb-4">
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div className="flex items-center gap-2">
-              <div className={`p-2 rounded-lg ${project.current ? "bg-primary/20" : "bg-muted"}`}>
-                <Building2 size={16} className={project.current ? "text-primary" : "text-muted-foreground"} />
-              </div>
-              <span className={`text-xs font-mono ${project.current ? "text-primary" : "text-muted-foreground"}`}>
-                {project.company}
-              </span>
-            </div>
-            {project.current && (
-              <span className="px-2 py-1 bg-primary/20 text-primary text-xs font-mono rounded-full flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                Current
-              </span>
-            )}
-            {project.featured && !project.current && (
-              <span className="px-2 py-1 bg-secondary/20 text-secondary text-xs font-mono rounded-full">
-                Featured
-              </span>
-            )}
-          </div>
+    <section id="projects" className="shell py-24 md:py-32">
+      <SectionHeader
+        index={3}
+        eyebrow={t.projects.eyebrow}
+        heading={t.projects.heading}
+        description={t.projects.description}
+      />
 
-          <h3 className="text-xl font-bold font-[family-name:var(--font-display)] mb-3 group-hover:text-primary transition-colors">
-            {project.title}
-          </h3>
-          
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            {project.description}
-          </p>
+      <div className="reveal mt-14">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+          <span className="t-eyebrow text-muted">{t.projects.filterLabel}</span>
+          <span className="t-ui ml-auto text-muted" aria-live="polite">
+            <span className="t-meta">{visible.length}</span>{" "}
+            {t.projects.countSuffix}{" "}
+            <span className="t-meta">{projects.length}</span>
+          </span>
         </div>
 
-        {/* Technologies */}
-        <div className="px-6 pb-6">
-          <div className="flex flex-wrap gap-2">
-            {project.technologies.map((tech) => (
-              <span
-                key={tech}
-                className="px-2 py-1 bg-muted rounded-md text-xs text-muted-foreground border border-border/50 hover:text-primary hover:border-primary/30 transition-colors"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          <Chip active={filter === null} onClick={() => setFilter(null)}>
+            {t.projects.filterAll}
+          </Chip>
+          {allTechnologies.map((tech) => (
+            <Chip
+              key={tech}
+              active={filter === tech}
+              onClick={() => setFilter(filter === tech ? null : tech)}
+            >
+              {tech}
+            </Chip>
+          ))}
         </div>
-
-        {/* Decorative corner accent */}
-        <div className={`absolute top-0 right-0 w-16 h-16 opacity-10 ${
-          project.current ? "bg-primary" : "bg-secondary"
-        }`} style={{
-          clipPath: "polygon(100% 0, 0 0, 100% 100%)",
-        }} />
       </div>
-    </motion.div>
+
+      <div className="mt-10">
+        <div className="hidden grid-cols-12 gap-4 border-b border-rule pb-2 md:grid">
+          <span className="t-eyebrow col-span-5 text-muted">
+            {t.projects.colProject}
+          </span>
+          <span className="t-eyebrow col-span-3 text-muted">
+            {t.projects.colCompany}
+          </span>
+          <span className="t-eyebrow col-span-3 text-muted">
+            {t.projects.colStack}
+          </span>
+          <span className="t-eyebrow col-span-1 text-right text-muted">
+            {t.projects.colStatus}
+          </span>
+        </div>
+
+        <ul className="border-t border-rule md:border-t-0">
+          {visible.map((project) => {
+            const copy = t.content.projects[project.id];
+            const isOpen = expanded === project.id;
+
+            return (
+              <li key={project.id} className="reveal border-b border-rule">
+                <h3>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setExpanded(isOpen ? null : project.id)
+                    }
+                    aria-expanded={isOpen}
+                    className="group grid w-full grid-cols-1 gap-x-4 gap-y-1.5 py-4 text-left md:grid-cols-12 md:items-baseline"
+                  >
+                    <span className="flex items-center gap-2.5 md:col-span-5">
+                      {isOpen ? (
+                        <Minus size={13} strokeWidth={2} className="shrink-0 text-accent" />
+                      ) : (
+                        <Plus
+                          size={13}
+                          strokeWidth={2}
+                          className="shrink-0 text-muted transition-colors group-hover:text-ink"
+                        />
+                      )}
+                      <span className="t-title">{copy.title}</span>
+                    </span>
+
+                    <span className="pl-[23px] text-sm text-muted md:col-span-3 md:pl-0">
+                      {project.company}
+                    </span>
+
+                    <span className="t-meta pl-[23px] text-muted md:col-span-3 md:pl-0">
+                      {project.technologies.join(" · ")}
+                    </span>
+
+                    <span className="flex items-center gap-1.5 pl-[23px] md:col-span-1 md:justify-end md:pl-0">
+                      {project.current && (
+                        <span
+                          className="live-dot inline-block h-1.5 w-1.5 rounded-full bg-live"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <span
+                        className={`text-[0.6875rem] ${
+                          project.current ? "text-ink" : "text-muted"
+                        }`}
+                      >
+                        {project.current
+                          ? t.projects.statusCurrent
+                          : t.projects.statusShipped}
+                      </span>
+                    </span>
+                  </button>
+                </h3>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.24, ease: [0.2, 0.7, 0.25, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <p className="max-w-2xl pb-6 pl-[23px] text-sm leading-relaxed text-muted md:pl-0">
+                        {copy.description}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </li>
+            );
+          })}
+        </ul>
+
+        {visible.length === 0 && (
+          <p className="py-10 text-sm text-muted">
+            {t.projects.empty}{" "}
+            <button
+              type="button"
+              onClick={() => setFilter(null)}
+              className="text-accent underline underline-offset-2"
+            >
+              {t.projects.filterClear}
+            </button>
+          </p>
+        )}
+
+        <p className="t-meta mt-6 text-muted">{t.projects.note}</p>
+      </div>
+    </section>
   );
 }
 
-export default function Projects() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [selectedTech, setSelectedTech] = useState<string | null>(null);
-  const [showFilters, setShowFilters] = useState(false);
-
-  const filteredProjects = useMemo(() => {
-    if (!selectedTech) return projects;
-    return projects.filter((p) => p.technologies.includes(selectedTech));
-  }, [selectedTech]);
-
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
-    <section id="projects" className="relative py-32 overflow-hidden">
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-background/70 z-0" />
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent z-10" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-12"
-        >
-          <span className="text-primary text-sm font-medium tracking-widest uppercase mb-4 block">
-            Portfolio
-          </span>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-display)] mb-4">
-                Things I&apos;ve <span className="text-gradient">built</span>
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                A selection of projects from companies I&apos;ve worked with.
-                Due to confidentiality, details are limited but the impact was real.
-              </p>
-            </div>
-
-            {/* Filter toggle button */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all font-mono text-sm ${
-                showFilters || selectedTech
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border text-muted-foreground hover:border-primary hover:text-primary"
-              }`}
-            >
-              <Filter size={16} />
-              {selectedTech ? `Filtered: ${selectedTech}` : "Filter by tech"}
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Filter chips */}
-        <AnimatePresence>
-          {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="mb-12 overflow-hidden"
-            >
-              <div className="flex flex-wrap gap-2 p-4 bg-card/50 rounded-xl border border-border">
-                <button
-                  onClick={() => setSelectedTech(null)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-mono transition-all ${
-                    !selectedTech
-                      ? "bg-primary text-background"
-                      : "bg-muted text-muted-foreground hover:text-primary border border-border"
-                  }`}
-                >
-                  All
-                </button>
-                {allTechnologies.map((tech) => (
-                  <button
-                    key={tech}
-                    onClick={() => setSelectedTech(tech === selectedTech ? null : tech)}
-                    className={`px-3 py-1.5 rounded-full text-sm font-mono transition-all ${
-                      selectedTech === tech
-                        ? "bg-primary text-background"
-                        : "bg-muted text-muted-foreground hover:text-primary border border-border"
-                    }`}
-                  >
-                    {tech}
-                  </button>
-                ))}
-                {selectedTech && (
-                  <button
-                    onClick={() => setSelectedTech(null)}
-                    className="px-3 py-1.5 rounded-full text-sm font-mono bg-accent/20 text-accent hover:bg-accent/30 transition-all flex items-center gap-1"
-                  >
-                    <X size={14} />
-                    Clear
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Results count */}
-        {selectedTech && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-muted-foreground text-sm mb-8 font-mono"
-          >
-            Showing {filteredProjects.length} project{filteredProjects.length !== 1 ? "s" : ""} with {selectedTech}
-          </motion.p>
-        )}
-
-        {/* Project Grid */}
-        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
-            ))}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* No results */}
-        {filteredProjects.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16"
-          >
-            <p className="text-muted-foreground font-mono">
-              No projects found with {selectedTech}
-            </p>
-            <button
-              onClick={() => setSelectedTech(null)}
-              className="mt-4 px-4 py-2 text-primary hover:underline font-mono"
-            >
-              Clear filter
-            </button>
-          </motion.div>
-        )}
-
-        {/* Confidentiality note */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.5 }}
-          className="mt-12 p-4 bg-muted/50 rounded-xl border border-border/50 text-center"
-        >
-          <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-            <Briefcase size={14} />
-            <span>Some project details are confidential. More information available upon request.</span>
-          </p>
-        </motion.div>
-      </div>
-    </section>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`t-meta border px-2 py-1 transition-colors ${
+        active
+          ? "border-ink bg-ink text-paper"
+          : "border-rule text-muted hover:border-ink hover:text-ink"
+      }`}
+    >
+      {children}
+    </button>
   );
 }

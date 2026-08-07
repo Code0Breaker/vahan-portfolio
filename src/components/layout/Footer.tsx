@@ -1,54 +1,38 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Heart, Github, Linkedin, Mail } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
+import { socialLinks } from "@/data/social";
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="relative py-12 border-t border-primary/30">
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-background/90 z-0" />
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="flex items-center gap-2 text-muted-foreground"
-          >
-            <span>© {currentYear} Vahan Muradyan. Built with</span>
-            <Heart className="w-4 h-4 text-accent fill-accent animate-pulse" />
-            <span>using Next.js</span>
-          </motion.div>
+    <footer className="relative z-10 border-t border-rule bg-paper/80 backdrop-blur-[2px]">
+      <div className="shell flex flex-col gap-3 py-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-[0.6875rem] text-muted">
+          {t.footer.builtBy} · {t.footer.builtWith}
+        </p>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="flex items-center gap-4"
-          >
-            {[
-              { icon: Github, href: "https://github.com/Code0Breaker", label: "GitHub" },
-              { icon: Linkedin, href: "https://www.linkedin.com/in/vahan-muradyan-1833331b7/", label: "LinkedIn" },
-              { icon: Mail, href: "mailto:vahan0muradyan@gmail.com", label: "Email" },
-            ].map((social) => (
+        <div className="flex items-center gap-4">
+          {socialLinks.map((social) => {
+            const isMail = social.href.startsWith("mailto:");
+            return (
               <a
                 key={social.label}
                 href={social.href}
-                target={social.label !== "Email" ? "_blank" : undefined}
-                rel={social.label !== "Email" ? "noopener noreferrer" : undefined}
-                className="p-2 text-muted-foreground hover:text-primary transition-colors"
+                target={isMail ? undefined : "_blank"}
+                rel={isMail ? undefined : "noopener noreferrer"}
                 aria-label={social.label}
+                className="text-muted transition-colors hover:text-ink"
               >
-                <social.icon size={18} />
+                <social.icon size={15} />
               </a>
-            ))}
-          </motion.div>
+            );
+          })}
+          <span className="t-meta text-muted">© {year}</span>
         </div>
       </div>
     </footer>
   );
 }
-

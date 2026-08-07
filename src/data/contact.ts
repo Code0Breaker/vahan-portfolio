@@ -1,30 +1,28 @@
-import { Mail, Phone, Linkedin, MapPin } from "lucide-react";
 import type { ContactItem } from "@/types";
 
+export const EMAIL = "vahan0muradyan@gmail.com";
+
+/** Labels live in translations.content.contactLabels. */
 export const contactInfo: ContactItem[] = [
   {
-    icon: Mail,
-    label: "Email",
-    value: "vahan0muradyan@gmail.com",
-    href: "mailto:vahan0muradyan@gmail.com",
+    id: "email",
+    value: EMAIL,
+    href: `mailto:${EMAIL}`,
   },
   {
-    icon: Phone,
-    label: "Phone",
-    value: "+(374) 95579989",
+    id: "phone",
+    value: "+374 95 579 989",
     href: "tel:+37495579989",
   },
   {
-    icon: Linkedin,
-    label: "LinkedIn",
-    value: "Vahan Muradyan",
-    href: "https://www.linkedin.com/in/vahan-muradyan-1833331b7/",
+    id: "linkedin",
+    value: "vahan-muradyan",
+    href: "https://www.linkedin.com/in/vahan-muradyan/",
     external: true,
   },
   {
-    icon: MapPin,
-    label: "Location",
-    value: "UAE",
+    id: "location",
+    value: "Abu Dhabi, UAE",
     href: null,
   },
 ];

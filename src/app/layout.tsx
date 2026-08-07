@@ -1,83 +1,100 @@
-import type { Metadata } from "next";
-import { Syne, Outfit } from "next/font/google";
-import { ClientWrapper } from "@/components/layout";
+import type { Metadata, Viewport } from "next";
+import {
+  Bricolage_Grotesque,
+  IBM_Plex_Sans,
+  Martian_Mono,
+  Noto_Sans_Armenian,
+} from "next/font/google";
+import { LanguageProvider } from "@/lib/i18n/context";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-display",
+/* Display: a grotesque with real width character, used large and sparingly. */
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
-const outfit = Outfit({
-  variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+/* Body: IBM's engineering typeface — the right register for this subject,
+   and the only one of the three that covers Cyrillic. */
+const plex = IBM_Plex_Sans({
+  variable: "--font-plex",
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
-const siteUrl = "https://vmuradyan.com"; // Update this with your actual domain
+/* Mono: reserved for machine-generated values — times, counts, percentages. */
+const martian = Martian_Mono({
+  variable: "--font-martian",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
+
+/* Armenian fallback for the hy locale. */
+const notoArmenian = Noto_Sans_Armenian({
+  variable: "--font-noto-armenian",
+  subsets: ["armenian"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+const siteUrl = "https://vmuradyan.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Vahan Muradyan | Software Engineer",
-    template: "%s | Vahan Muradyan",
+    default: "Vahan Muradyan — Software Engineer",
+    template: "%s — Vahan Muradyan",
   },
   description:
-    "Full-stack software engineer with 5+ years of experience specializing in React, Vue.js, Next.js, TypeScript, and Node.js. Currently at G42 in UAE. Building efficient, user-friendly web applications.",
+    "Full-stack software engineer at G42 in Abu Dhabi. Five years building production systems in React, Vue, Next.js, Node and Electron — build delivery over WebTorrent, RSA-encrypted payroll, procurement analytics.",
   keywords: [
     "Vahan Muradyan",
     "Software Engineer",
     "Full Stack Developer",
-    "Frontend Developer",
-    "React Developer",
-    "Vue.js Developer",
-    "Next.js Developer",
+    "React",
+    "Vue.js",
+    "Next.js",
     "TypeScript",
     "Node.js",
-    "JavaScript",
-    "Web Developer",
-    "G42",
-    "UAE",
-    "Yerevan",
-    "Armenia",
-    "Electron.js",
+    "Electron",
+    "NestJS",
     "GraphQL",
     "PostgreSQL",
-    "MongoDB",
+    "G42",
+    "Abu Dhabi",
+    "Yerevan",
+    "Armenia",
   ],
   authors: [{ name: "Vahan Muradyan", url: siteUrl }],
   creator: "Vahan Muradyan",
   publisher: "Vahan Muradyan",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+  formatDetection: { email: false, address: false, telephone: false },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: "Vahan Muradyan Portfolio",
-    title: "Vahan Muradyan | Software Engineer",
+    siteName: "Vahan Muradyan",
+    title: "Vahan Muradyan — Software Engineer",
     description:
-      "Full-stack software engineer with 5+ years of experience. Specializing in React, Vue.js, Next.js, TypeScript, and Node.js. Currently at G42 in UAE.",
+      "Full-stack software engineer at G42 in Abu Dhabi. Five years building the systems companies run on.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Vahan Muradyan - Software Engineer",
+        alt: "Vahan Muradyan — Software Engineer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vahan Muradyan | Software Engineer",
+    title: "Vahan Muradyan — Software Engineer",
     description:
-      "Full-stack software engineer with 5+ years of experience. Specializing in React, Vue.js, Next.js, TypeScript, and Node.js.",
+      "Full-stack software engineer at G42 in Abu Dhabi. Five years building the systems companies run on.",
     images: ["/og-image.png"],
-    creator: "@vahanmuradyan", // Update with your Twitter handle if you have one
   },
   robots: {
     index: true,
@@ -90,19 +107,16 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    // Add your verification codes here when you have them
-    // google: "your-google-verification-code",
-    // yandex: "your-yandex-verification-code",
-  },
-  alternates: {
-    canonical: siteUrl,
-  },
+  alternates: { canonical: siteUrl },
   manifest: "/manifest.json",
   category: "technology",
 };
 
-// JSON-LD Structured Data
+export const viewport: Viewport = {
+  themeColor: "#050807",
+  colorScheme: "dark",
+};
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -110,7 +124,7 @@ const jsonLd = {
   url: siteUrl,
   image: `${siteUrl}/photo.jpg`,
   sameAs: [
-    "https://www.linkedin.com/in/vahan-muradyan-1833331b7/",
+    "https://www.linkedin.com/in/vahan-muradyan/",
     "https://github.com/Code0Breaker",
   ],
   jobTitle: "Software Engineer",
@@ -119,39 +133,31 @@ const jsonLd = {
     name: "G42",
     url: "https://g42.ai",
   },
-  address: {
-    "@type": "PostalAddress",
-    addressCountry: "AE",
-  },
+  address: { "@type": "PostalAddress", addressCountry: "AE" },
   email: "vahan0muradyan@gmail.com",
   telephone: "+37495579989",
+  knowsLanguage: ["en", "ru", "hy"],
   knowsAbout: [
     "JavaScript",
     "TypeScript",
-    "React.js",
+    "React",
     "Vue.js",
     "Next.js",
     "Node.js",
+    "NestJS",
     "GraphQL",
     "PostgreSQL",
     "MongoDB",
-    "Electron.js",
-    "Web Development",
-    "Full Stack Development",
+    "Electron",
+    "WebRTC",
   ],
-  alumniOf: {
-    "@type": "EducationalOrganization",
-    name: "Software Engineering",
-  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en">
       <head>
         <script
           type="application/ld+json"
@@ -159,12 +165,9 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${syne.variable} ${outfit.variable} antialiased bg-background`}
+        className={`${bricolage.variable} ${plex.variable} ${martian.variable} ${notoArmenian.variable}`}
       >
-        <ClientWrapper>
-          <div className="noise" />
-          {children}
-        </ClientWrapper>
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

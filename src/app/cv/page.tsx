@@ -1,211 +1,197 @@
 "use client";
 
-import { useRef } from "react";
-import { Download, Printer, Mail, Phone, Linkedin, MapPin } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, Printer } from "lucide-react";
+import LanguageSwitcher from "@/components/chrome/LanguageSwitcher";
+import Monogram from "@/components/chrome/Monogram";
+import { useLanguage } from "@/lib/i18n/context";
+import { contactInfo } from "@/data/contact";
+import { experiences } from "@/data/experience";
+import { projects } from "@/data/projects";
+import { showcaseProjects } from "@/data/showcase-projects";
+import { skillGroups } from "@/data/skills";
 
 export default function CVPage() {
-  const cvRef = useRef<HTMLDivElement>(null);
-
-  const handlePrint = () => {
-    window.print();
-  };
+  const { t } = useLanguage();
 
   return (
-    <>
-      {/* Print-only styles */}
-      <style jsx global>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          #cv-content, #cv-content * {
-            visibility: visible;
-          }
-          #cv-content {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            background: white !important;
-            color: black !important;
-          }
-          .no-print {
-            display: none !important;
-          }
-          @page {
-            margin: 0.5in;
-          }
-        }
-      `}</style>
+    /* light-doc pins the daylight palette: the CV stays a print document
+       while the rest of the site runs dark. */
+    <div className="light-doc min-h-screen bg-paper">
+      <div className="no-print border-b border-rule bg-surface">
+        <div className="mx-auto flex max-w-4xl items-center gap-3 px-6 py-3">
+          <Link
+            href="/"
+            className="t-meta inline-flex items-center gap-2 text-muted transition-colors hover:text-ink"
+          >
+            <ArrowLeft size={13} strokeWidth={2} />
+            {t.cv.backToSite}
+          </Link>
 
-      {/* Action buttons - hidden when printing */}
-      <div className="no-print fixed top-4 right-4 z-50 flex gap-2">
-        <button
-          onClick={handlePrint}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-background rounded-lg font-mono text-sm hover:bg-primary/90 transition-colors"
-        >
-          <Download size={16} />
-          Save as PDF
-        </button>
-        <button
-          onClick={handlePrint}
-          className="flex items-center gap-2 px-4 py-2 bg-muted border border-border text-foreground rounded-lg font-mono text-sm hover:border-primary transition-colors"
-        >
-          <Printer size={16} />
-          Print
-        </button>
-        <a
-          href="/"
-          className="flex items-center gap-2 px-4 py-2 bg-muted border border-border text-foreground rounded-lg font-mono text-sm hover:border-primary transition-colors"
-        >
-          Back to Site
-        </a>
+          <div className="ml-auto flex items-center gap-2">
+            <LanguageSwitcher />
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="t-meta inline-flex items-center gap-2 bg-ink px-3 py-1.5 text-paper transition-colors hover:bg-accent"
+            >
+              <Printer size={13} strokeWidth={2} />
+              {t.cv.saveAsPdf}
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* CV Content */}
-      <div
+      <article
         id="cv-content"
-        ref={cvRef}
-        className="max-w-4xl mx-auto p-8 bg-white text-gray-900 min-h-screen"
-        style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}
+        className="mx-auto max-w-4xl bg-surface px-6 py-12 print:max-w-none print:px-0 print:py-0"
       >
-        {/* Header */}
-        <header className="border-b-2 border-gray-900 pb-6 mb-6">
-          <h1 className="text-4xl font-bold mb-2">Vahan Muradyan</h1>
-          <p className="text-xl text-gray-600 mb-4">Software Engineer</p>
-          
-          <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-            <a href="tel:+37495579989" className="flex items-center gap-1 hover:text-gray-900">
-              <Phone size={14} />
-              +(374) 95579989
-            </a>
-            <a href="mailto:vahan0muradyan@gmail.com" className="flex items-center gap-1 hover:text-gray-900">
-              <Mail size={14} />
-              vahan0muradyan@gmail.com
-            </a>
-            <a href="https://www.linkedin.com/in/vahan-muradyan-1833331b7/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-gray-900">
-              <Linkedin size={14} />
-              Vahan Muradyan
-            </a>
-            <span className="flex items-center gap-1">
-              <MapPin size={14} />
-              UAE
-            </span>
+        <header className="border-b-2 border-ink pb-6">
+          <div className="flex items-start gap-3">
+            <Monogram className="mt-1" />
+            <div>
+              <h1
+                className="text-4xl font-bold leading-none tracking-tight"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                Vahan Muradyan
+              </h1>
+              <p className="mt-2 text-lg text-muted">{t.hero.nowRole}</p>
+            </div>
           </div>
+
+          <dl className="mt-6 grid gap-x-8 gap-y-1.5 text-sm sm:grid-cols-2">
+            {contactInfo.map((item) => (
+              <div key={item.id} className="flex gap-3">
+                <dt className="t-eyebrow w-20 shrink-0 pt-1 text-muted">
+                  {t.content.contactLabels[item.id]}
+                </dt>
+                <dd>
+                  {item.href ? (
+                    <a href={item.href} className="underline underline-offset-2">
+                      {item.value}
+                    </a>
+                  ) : (
+                    item.value
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </header>
 
-        {/* About */}
-        <section className="mb-6">
-          <h2 className="text-lg font-bold uppercase tracking-wider border-b border-gray-300 pb-1 mb-3">About Me</h2>
-          <p className="text-sm text-gray-700 leading-relaxed">
-            Passionate software engineer with over five years of experience in full-stack development. 
-            I thrive on tackling complex challenges and crafting efficient, user-friendly web applications 
-            using modern JavaScript frameworks. I believe in writing clean, maintainable code and always 
-            strive for excellence in my work.
+        <Block title={t.cv.summary}>
+          <p className="text-sm leading-relaxed">{t.about.bio1}</p>
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            {t.about.bio2}
           </p>
-        </section>
+        </Block>
 
-        {/* Experience */}
-        <section className="mb-6">
-          <h2 className="text-lg font-bold uppercase tracking-wider border-b border-gray-300 pb-1 mb-3">Experience</h2>
-          
-          {/* G42 */}
-          <div className="mb-5">
-            <div className="flex justify-between items-start mb-1">
-              <div>
-                <h3 className="font-bold">Software Engineer</h3>
-                <p className="text-gray-600">G42, UAE</p>
+        <Block title={t.cv.experience}>
+          <div className="space-y-7">
+            {experiences.map((job) => {
+              const copy = t.content.experience[job.id];
+              return (
+                <section key={job.id} className="break-inside-avoid">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+                    <h3 className="text-base font-semibold">
+                      {copy.role} — {job.company}
+                    </h3>
+                    <span className="t-meta text-muted">
+                      {job.range.from} — {job.range.to ?? t.cv.present} ·{" "}
+                      {job.location}
+                    </span>
+                  </div>
+
+                  <p className="mt-1.5 text-sm text-muted">{copy.description}</p>
+
+                  {copy.projects.length > 0 && (
+                    <ul className="mt-3 space-y-2">
+                      {copy.projects.map((project) => (
+                        <li key={project.title} className="text-sm">
+                          <span className="font-medium">{project.title}</span>
+                          <ul className="mt-1 space-y-1">
+                            {project.details.map((detail) => (
+                              <li
+                                key={detail}
+                                className="flex gap-2.5 leading-relaxed text-muted"
+                              >
+                                <span
+                                  aria-hidden="true"
+                                  className="mt-[0.62em] h-px w-2.5 shrink-0 bg-rule"
+                                />
+                                <span>{detail}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              );
+            })}
+          </div>
+        </Block>
+
+        <Block title={t.cv.skills}>
+          <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+            {skillGroups.map((group) => (
+              <div key={group.id} className="break-inside-avoid">
+                <dt className="text-sm font-semibold">
+                  {t.content.skillGroups[group.id]}
+                </dt>
+                <dd className="mt-0.5 text-sm leading-relaxed text-muted">
+                  {group.skills.join(", ")}
+                </dd>
               </div>
-              <span className="text-sm text-gray-500">MAY 2025 - Present</span>
-            </div>
-            <p className="text-sm text-gray-700">
-              Working on AI-powered media platforms and digital solutions, building modern web interfaces 
-              for content delivery and user engagement.
-            </p>
-          </div>
+            ))}
+          </dl>
+        </Block>
 
-          {/* Saber Interactive */}
-          <div className="mb-5">
-            <div className="flex justify-between items-start mb-1">
-              <div>
-                <h3 className="font-bold">Software Engineer</h3>
-                <p className="text-gray-600">Saber Interactive, Yerevan</p>
+        <Block title={t.cv.projects}>
+          <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+            {showcaseProjects.map((project) => (
+              <div key={project.id} className="break-inside-avoid">
+                <dt className="text-sm font-semibold">
+                  {t.content.showcase[project.id].title}
+                </dt>
+                <dd className="t-meta mt-0.5 text-muted">
+                  {project.url.replace(/^https?:\/\//, "")} ·{" "}
+                  {project.technologies.join(", ")}
+                </dd>
               </div>
-              <span className="text-sm text-gray-500">FEB 2023 - APR 2025</span>
-            </div>
-            <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
-              <li>Built download product using WebTorrent, Electron.js, Vue3, TypeScript</li>
-              <li>Developed procurement management system with Vue.js and GraphQL</li>
-              <li>Created payroll system with RSA encryption for secure data handling</li>
-              <li>Wrote tests using Playwright and Cypress for application stability</li>
-            </ul>
-          </div>
-
-          {/* ItHire */}
-          <div className="mb-5">
-            <div className="flex justify-between items-start mb-1">
-              <div>
-                <h3 className="font-bold">Full Stack Developer</h3>
-                <p className="text-gray-600">ItHire, Yerevan</p>
+            ))}
+            {projects.slice(0, 4).map((project) => (
+              <div key={project.id} className="break-inside-avoid">
+                <dt className="text-sm font-semibold">
+                  {t.content.projects[project.id].title}
+                </dt>
+                <dd className="t-meta mt-0.5 text-muted">
+                  {project.company} · {project.technologies.join(", ")}
+                </dd>
               </div>
-              <span className="text-sm text-gray-500">SEP 2019 - JAN 2023</span>
-            </div>
-            <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
-              <li>Developed educational platform with Nuxt.js, NestJS, PostgreSQL</li>
-              <li>Built flight & hotel booking application with Vue.js, Google Auth</li>
-              <li>Created freelancer platform with Next.js, WebRTC video chat</li>
-              <li>Developed websites using Vue3, Three.js, PayloadCMS</li>
-            </ul>
-          </div>
-        </section>
-
-        {/* Skills */}
-        <section className="mb-6">
-          <h2 className="text-lg font-bold uppercase tracking-wider border-b border-gray-300 pb-1 mb-3">Skills</h2>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <h4 className="font-semibold mb-1">Frontend</h4>
-              <p className="text-gray-700">JavaScript, TypeScript, React.js, Next.js, Vue.js, Nuxt.js, SCSS, Tailwind CSS</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-1">Backend</h4>
-              <p className="text-gray-700">Node.js, NestJS, GraphQL, TypeORM, PayloadCMS, PostgreSQL, MongoDB</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-1">Desktop & Real-time</h4>
-              <p className="text-gray-700">Electron.js, WebTorrent, Socket.io, WebRTC, PWA</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-1">Tools & DevOps</h4>
-              <p className="text-gray-700">Git, Webpack, Vite, NGINX, CI/CD, Docker, Playwright, Cypress</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Projects */}
-        <section>
-          <h2 className="text-lg font-bold uppercase tracking-wider border-b border-gray-300 pb-1 mb-3">Notable Projects</h2>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <h4 className="font-semibold">Aikikai Armenia</h4>
-              <p className="text-gray-600">aikikai.am - Next.js, React, TypeScript</p>
-            </div>
-            <div>
-              <h4 className="font-semibold">Terlemezyan Art School</h4>
-              <p className="text-gray-600">terlemezyan.com - Next.js, React, TypeScript</p>
-            </div>
-            <div>
-              <h4 className="font-semibold">DCP Armenia</h4>
-              <p className="text-gray-600">dcp.am - Next.js, React, PayloadCMS</p>
-            </div>
-            <div>
-              <h4 className="font-semibold">Build Download System</h4>
-              <p className="text-gray-600">Electron.js, Vue3, WebTorrent</p>
-            </div>
-          </div>
-        </section>
-      </div>
-    </>
+            ))}
+          </dl>
+        </Block>
+      </article>
+    </div>
   );
 }
 
+function Block({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="mt-8">
+      <h2 className="t-eyebrow border-b border-rule pb-1.5 text-ink">
+        {title}
+      </h2>
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}

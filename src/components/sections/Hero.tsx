@@ -1,132 +1,165 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowDown, Download } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import Decode from "@/components/effects/Decode";
+import Tilt from "@/components/ui/Tilt";
 import { useLanguage } from "@/lib/i18n/context";
-import { socialLinks } from "@/data/social";
+import { CAREER_START, experiences } from "@/data/experience";
+import { projects } from "@/data/projects";
+import { showcaseProjects } from "@/data/showcase-projects";
+
+const YEAR_MS = 365.25 * 24 * 60 * 60 * 1000;
+
+// Every number in the panel is derived, not typed in, so it stays true as the
+// data grows. Read once per page load rather than on every render.
+const YEARS_SHIPPING = Math.floor(
+  (Date.now() - CAREER_START.getTime()) / YEAR_MS,
+);
+const SYSTEMS_LIVE = projects.length + showcaseProjects.length;
+const COMPANIES = experiences.length;
 
 export default function Hero() {
   const { t } = useLanguage();
-  
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Subtle vignette overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(10,10,15,0.4)_50%,rgba(10,10,15,0.8)_100%)] pointer-events-none z-10" />
-      
-      <div className="relative z-20 max-w-7xl mx-auto px-6 py-32 text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="mb-6"
-        >
-          <span className="inline-block px-4 py-2 rounded-full bg-black/50 backdrop-blur-sm border border-primary/30 text-sm text-primary font-mono">
-            <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse mr-2" />
-            {t.hero.status}
-          </span>
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold font-[family-name:var(--font-display)] mb-6 tracking-tight"
-        >
-          <span className="text-foreground">Vahan</span>{" "}
-          <span className="text-primary drop-shadow-[0_0_25px_rgba(0,255,170,0.5)]">Muradyan</span>
-        </motion.h1>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-8"
-        >
-          <h2 className="text-xl sm:text-2xl md:text-3xl text-muted-foreground font-light font-mono">
-            <span className="text-primary">&gt;</span> {t.hero.role}{" "}
-            <span className="text-secondary font-medium">G42</span>
-            <span className="animate-pulse">_</span>
-          </h2>
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="max-w-2xl mx-auto text-muted-foreground text-lg mb-12 leading-relaxed"
-        >
-          {t.hero.description}
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-4 mb-16"
-        >
-          <a
-            href="#contact"
-            className="group relative px-8 py-4 bg-primary text-background font-semibold rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,65,0.6)] font-mono"
+    <section
+      aria-labelledby="hero-heading"
+      className="shell flex min-h-[calc(100svh-var(--rail-top)-var(--rail-bottom))] items-center py-16 md:py-24"
+    >
+      <div className="grid w-full gap-12 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-7">
+          <p
+            className="boot inline-flex items-center gap-2 border border-rule px-2.5 py-1"
+            style={{ "--boot-delay": "40ms" } as React.CSSProperties}
           >
-            <span className="relative z-10">{t.hero.contact}</span>
-          </a>
-          <a
-            href="#projects"
-            className="px-8 py-4 border border-primary/50 text-primary font-semibold rounded-full hover:bg-primary/10 hover:border-primary transition-all duration-300 font-mono"
-          >
-            {t.hero.viewProjects}
-          </a>
-          <a
-            href="/cv"
-            target="_blank"
-            className="inline-flex items-center gap-2 px-8 py-4 border border-secondary/50 text-secondary font-semibold rounded-full hover:bg-secondary/10 hover:border-secondary transition-all duration-300 font-mono"
-          >
-            <Download size={18} />
-            {t.hero.getResume}
-          </a>
-        </motion.div>
+            <span
+              className="live-dot inline-block h-1.5 w-1.5 rounded-full bg-live"
+              aria-hidden="true"
+            />
+            <span className="text-[0.6875rem] text-muted">{t.hero.status}</span>
+          </p>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex items-center justify-center gap-6"
-        >
-          {socialLinks.map((social, index) => (
-            <motion.a
-              key={social.label}
-              href={social.href}
-              target={social.label !== "Email" ? "_blank" : undefined}
-              rel={social.label !== "Email" ? "noopener noreferrer" : undefined}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 + index * 0.1 }}
-              className="p-3 rounded-full bg-black/50 backdrop-blur-sm border border-primary/30 text-primary hover:bg-primary/20 hover:border-primary hover:shadow-[0_0_20px_rgba(0,255,170,0.3)] transition-all duration-300"
-              aria-label={social.label}
+          <h1 id="hero-heading" className="t-hero mt-7">
+            {[t.hero.line1, t.hero.line2, t.hero.line3].map((line, i) => (
+              <span key={i} className="block overflow-hidden pb-[0.06em]">
+                <span
+                  className="boot block"
+                  style={
+                    { "--boot-delay": `${120 + i * 90}ms` } as React.CSSProperties
+                  }
+                >
+                  {/* Each line resolves out of the same glyphs the rain
+                      falls with, staggered to match the boot sequence. */}
+                  <Decode text={line} delay={160 + i * 160} />
+                </span>
+              </span>
+            ))}
+          </h1>
+
+          <p
+            className="boot t-lead mt-8 max-w-xl text-muted"
+            style={{ "--boot-delay": "440ms" } as React.CSSProperties}
+          >
+            {t.hero.lead}
+          </p>
+
+          <div
+            className="boot mt-10 flex flex-wrap items-center gap-3"
+            style={{ "--boot-delay": "540ms" } as React.CSSProperties}
+          >
+            <a
+              href="#contact"
+              className="group inline-flex items-center gap-2 bg-ink px-5 py-3 text-sm font-medium text-paper transition-colors hover:bg-accent"
             >
-              <social.icon size={20} />
-            </motion.a>
-          ))}
-        </motion.div>
-      </div>
+              {t.hero.ctaContact}
+              <ArrowRight
+                size={15}
+                strokeWidth={2}
+                className="transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </a>
+            <a
+              href="#work"
+              className="inline-flex items-center gap-2 border border-rule px-5 py-3 text-sm font-medium text-ink transition-colors hover:border-ink"
+            >
+              {t.hero.ctaWork}
+            </a>
+            <a
+              href="/cv"
+              target="_blank"
+              rel="noopener"
+              className="group inline-flex items-center gap-1.5 px-2 py-3 text-sm font-medium text-accent"
+            >
+              {t.hero.ctaResume}
+              <ArrowUpRight
+                size={15}
+                strokeWidth={2}
+                className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              />
+            </a>
+          </div>
+        </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
-      >
-        <motion.a
-          href="#about"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="flex flex-col items-center gap-2 text-primary hover:text-primary/80 transition-colors font-mono text-sm"
+        {/* The instrument inset: current state, reported the way the status
+            bar reports document state. Tilted in 3D, lit above the rain. */}
+        <div
+          className="boot self-start lg:col-span-5"
+          style={{ "--boot-delay": "380ms" } as React.CSSProperties}
         >
-          <span className="tracking-widest">&gt;&gt; {t.hero.scroll}</span>
-          <ArrowDown size={16} />
-        </motion.a>
-      </motion.div>
+          <Tilt className="panel-glow on-panel bg-panel text-surface">
+            <aside>
+              <div className="flex items-center justify-between border-b border-rule-dark px-4 py-2.5">
+                <span className="t-eyebrow text-muted-dark">
+                  {t.hero.nowLabel}
+                </span>
+                <span
+                  className="live-dot inline-block h-1.5 w-1.5 rounded-full bg-live"
+                  aria-hidden="true"
+                />
+              </div>
+
+              <div className="px-4 py-5">
+                <p className="t-title">{t.hero.nowRole}</p>
+                <p className="mt-1.5 text-sm text-muted-dark">{t.hero.nowOrg}</p>
+                <p className="mt-4 text-sm">{t.hero.nowFocus}</p>
+              </div>
+
+              <dl className="grid grid-cols-3 border-t border-rule-dark">
+                <Stat value={YEARS_SHIPPING} label={t.hero.statYears} live />
+                <Stat value={SYSTEMS_LIVE} label={t.hero.statSystems} />
+                <Stat value={COMPANIES} label={t.hero.statCompanies} />
+              </dl>
+            </aside>
+          </Tilt>
+        </div>
+      </div>
     </section>
+  );
+}
+
+function Stat({
+  value,
+  label,
+  live = false,
+}: {
+  value: number;
+  label: string;
+  live?: boolean;
+}) {
+  return (
+    /* dt before dd for valid markup; reversed visually so the number leads. */
+    <div className="flex flex-col-reverse border-l border-rule-dark px-4 py-4 first:border-l-0">
+      <dt className="mt-1.5 text-[0.6875rem] leading-snug text-muted-dark">
+        {label}
+      </dt>
+      <dd
+        className="font-mono text-2xl tabular"
+        // Derived from the current date, so the prerendered value can lag by a
+        // year until the next build.
+        suppressHydrationWarning={live}
+      >
+        {String(value).padStart(2, "0")}
+      </dd>
+    </div>
   );
 }

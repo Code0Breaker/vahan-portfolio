@@ -1,26 +1,19 @@
-import {
-  Monitor,
-  Server,
-  Database,
-  Wrench,
-  Shield,
-  Zap,
-} from "lucide-react";
-import type { SkillCategory } from "@/types";
+import type { SkillGroup } from "@/types";
 
-export const skillCategories: SkillCategory[] = [
+/** Group names live in translations.content.skillGroups. */
+export const skillGroups: SkillGroup[] = [
   {
-    icon: Monitor,
-    title: "Frontend",
-    color: "primary",
+    id: "frontend",
     skills: [
       "JavaScript",
       "TypeScript",
-      "React.js",
+      "React",
       "Next.js",
-      "Vue.js (Vue2, Vue3)",
-      "Nuxt.js",
+      "Vue 2",
+      "Vue 3",
+      "Nuxt",
       "SCSS",
+      "Tailwind CSS",
       "MUI",
       "Vuetify",
       "PrimeVue",
@@ -28,69 +21,33 @@ export const skillCategories: SkillCategory[] = [
     ],
   },
   {
-    icon: Server,
-    title: "Backend",
-    color: "secondary",
-    skills: [
-      "Node.js",
-      "NestJS",
-      "TypeORM",
-      "GraphQL",
-      "PayloadCMS",
-      "REST APIs",
-    ],
+    id: "backend",
+    skills: ["Node.js", "NestJS", "TypeORM", "GraphQL", "REST", "PayloadCMS"],
   },
   {
-    icon: Database,
-    title: "Database",
-    color: "accent",
-    skills: [
-      "PostgreSQL",
-      "MongoDB",
-      "Better-SQLite",
-    ],
+    id: "database",
+    skills: ["PostgreSQL", "MongoDB", "Better-SQLite"],
   },
   {
-    icon: Zap,
-    title: "Desktop & Real-time",
-    color: "primary",
-    skills: [
-      "Electron.js",
-      "WebTorrent",
-      "Socket.io",
-      "WebRTC",
-      "PWA",
-    ],
+    id: "desktop",
+    skills: ["Electron", "WebTorrent", "Socket.io", "WebRTC", "PWA"],
   },
   {
-    icon: Wrench,
-    title: "Tools & DevOps",
-    color: "secondary",
+    id: "tooling",
     skills: [
       "Git",
-      "GitHub",
-      "GitLab",
-      "BitBucket",
       "Webpack",
       "Vite",
       "ESLint",
       "Prettier",
+      "TeamCity",
+      "CI/CD",
       "NGINX",
       "Cloudflare",
-      "CI/CD",
-      "TeamCity",
     ],
   },
   {
-    icon: Shield,
-    title: "Testing & Security",
-    color: "accent",
-    skills: [
-      "Playwright",
-      "Cypress",
-      "RSA Encryption",
-      "SSL/HTTPS",
-      "Google Auth",
-    ],
+    id: "quality",
+    skills: ["Playwright", "Cypress", "RSA", "SSL/TLS", "Google Auth"],
   },
 ];
