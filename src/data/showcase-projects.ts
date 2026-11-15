@@ -69,4 +69,19 @@ export const showcaseProjects: ShowcaseProject[] = [
       },
     ],
   },
+  {
+    id: "5",
+    url: "https://teethplanning.com",
+    technologies: ["Next.js", "React", "TypeScript", "NestJS", "PostgreSQL"],
+    // The landing page runs a WebGL scene; a screenshot keeps this page light.
+    embeddable: false,
+    previewImage: "/previews/teethplanning.png",
+    team: [
+      {
+        role: "fullstack",
+        name: "Vahan Muradyan",
+        linkedin: "https://www.linkedin.com/in/vahan-muradyan/",
+      },
+    ],
+  },
 ];

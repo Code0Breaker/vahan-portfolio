@@ -215,6 +215,11 @@ const en = {
         description:
           "Anime streaming platform with a NestJS API, catalogue management and real-time watch state.",
       },
+      "5": {
+        title: "TeethPlanning",
+        description:
+          "My own SaaS for dental clinics: patient records with a tooth chart, phased treatment plans exported as PDF, scheduling and invoicing. 15 languages, subscription billing, web and desktop apps.",
+      },
     },
 
     projects: {
@@ -572,6 +577,11 @@ const ru: Translations = {
         description:
           "Платформа стриминга аниме с API на NestJS, управлением каталогом и состоянием просмотра в реальном времени.",
       },
+      "5": {
+        title: "TeethPlanning",
+        description:
+          "Мой собственный SaaS для стоматологических клиник: карты пациентов с зубной формулой, поэтапные планы лечения с экспортом в PDF, расписание и счета. 15 языков, оплата по подписке, веб- и десктоп-приложения.",
+      },
     },
 
     projects: {
@@ -927,6 +937,11 @@ const am: Translations = {
         title: "AnimeHub",
         description:
           "Անիմե հեռարձակման հարթակ NestJS API-ով, կատալոգի կառավարմամբ և իրական ժամանակի դիտման վիճակով։",
+      },
+      "5": {
+        title: "TeethPlanning",
+        description:
+          "Իմ սեփական SaaS-ը ատամնաբուժական կլինիկաների համար՝ հիվանդների քարտեր ատամնային քարտեզով, փուլային բուժման պլաններ PDF արտահանմամբ, այցերի գրաֆիկ և հաշիվներ։ 15 լեզու, բաժանորդային վճարում, վեբ և դեսկթոփ հավելվածներ։",
       },
     },
 
