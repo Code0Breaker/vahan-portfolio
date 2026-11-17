@@ -84,4 +84,16 @@ export const showcaseProjects: ShowcaseProject[] = [
       },
     ],
   },
+  {
+    id: "6",
+    url: "https://estel.am",
+    technologies: ["Next.js", "React", "TypeScript", "PayloadCMS", "MongoDB", "Tailwind CSS"],
+    team: [
+      {
+        role: "fullstack",
+        name: "Vahan Muradyan",
+        linkedin: "https://www.linkedin.com/in/vahan-muradyan/",
+      },
+    ],
+  },
 ];

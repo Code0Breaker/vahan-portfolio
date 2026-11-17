@@ -220,6 +220,11 @@ const en = {
         description:
           "My own SaaS for dental clinics: patient records with a tooth chart, phased treatment plans exported as PDF, scheduling and invoicing. 15 languages, subscription billing, web and desktop apps.",
       },
+      "6": {
+        title: "ESTEL Armenia",
+        description:
+          "Official ESTEL Professional catalogue for Armenia in three languages: home and pro sections, series and product pages, store finder, all driven by a PayloadCMS admin.",
+      },
     },
 
     projects: {
@@ -582,6 +587,11 @@ const ru: Translations = {
         description:
           "Мой собственный SaaS для стоматологических клиник: карты пациентов с зубной формулой, поэтапные планы лечения с экспортом в PDF, расписание и счета. 15 языков, оплата по подписке, веб- и десктоп-приложения.",
       },
+      "6": {
+        title: "ESTEL Armenia",
+        description:
+          "Официальный каталог ESTEL Professional для Армении на трёх языках: домашний и профессиональный разделы, страницы серий и продуктов, поиск магазинов — всё управляется через админку на PayloadCMS.",
+      },
     },
 
     projects: {
@@ -942,6 +952,11 @@ const am: Translations = {
         title: "TeethPlanning",
         description:
           "Իմ սեփական SaaS-ը ատամնաբուժական կլինիկաների համար՝ հիվանդների քարտեր ատամնային քարտեզով, փուլային բուժման պլաններ PDF արտահանմամբ, այցերի գրաֆիկ և հաշիվներ։ 15 լեզու, բաժանորդային վճարում, վեբ և դեսկթոփ հավելվածներ։",
+      },
+      "6": {
+        title: "ESTEL Armenia",
+        description:
+          "ESTEL Professional-ի պաշտոնական կատալոգը Հայաստանի համար՝ երեք լեզվով․ տնային և պրոֆեսիոնալ բաժիններ, սերիաների և ապրանքների էջեր, խանութների որոնում, ամբողջը կառավարվում է PayloadCMS ադմինով։",
       },
     },
 
